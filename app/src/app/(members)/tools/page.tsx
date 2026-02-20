@@ -42,7 +42,7 @@ export default function ToolsPage() {
                 <Link
                   key={slug}
                   href={`/tools/${slug}`}
-                  className="rounded-xl border border-border bg-card p-6 hover:border-primary/40 transition-colors group"
+                  className="rounded-xl border border-border bg-card p-6 hover:border-primary/40 group card-hover"
                 >
                   <div className="text-3xl mb-4">{meta.icon}</div>
                   <h2 className="font-semibold text-sm mb-2 group-hover:text-primary transition-colors">

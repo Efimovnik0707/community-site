@@ -125,7 +125,7 @@ function CourseRow({
     <div
       className={`flex items-start gap-5 rounded-xl border p-5 transition-colors ${
         available && accessible
-          ? 'border-border bg-card hover:border-primary/30 cursor-pointer'
+          ? 'border-border bg-card hover:border-primary/30 cursor-pointer card-hover'
           : available && !accessible
           ? 'border-border bg-card'
           : 'border-border/40 bg-card/40 opacity-60'
