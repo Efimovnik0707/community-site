@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   description: 'Доступ ко всем курсам, инструментам и AI-комьюнити Никиты Ефимова.',
 }
 
-const INVITE_MEMBER_URL = 'https://invitemember.com' // заменить на реальную ссылку InviteMember
+const INVITE_MEMBER_URL = 'https://web.tribute.tg/s/ODh'
 
 const features = [
   { icon: '🎓', text: 'Все курсы: N8N, ChatGPT, Claude Code и новые по мере выхода' },
@@ -81,7 +81,7 @@ export default async function JoinPage() {
               </a>
             </Button>
             <p className="text-xs text-muted-foreground">
-              Оплата через Stripe · Отмена без штрафов ·{' '}
+              Оплата через Tribute · Отмена без штрафов ·{' '}
               {isLoggedIn ? (
                 <span>Уже оплатил? Обнови доступ ниже</span>
               ) : (
