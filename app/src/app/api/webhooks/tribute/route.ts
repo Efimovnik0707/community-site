@@ -56,20 +56,36 @@ export async function POST(req: NextRequest) {
   const supabase = createServiceClient()
 
   if (name === 'new_subscription' || name === 'renewed_subscription') {
-    // Grant member access
-    const { error } = await supabase
+    // Try to update existing profile first
+    const { data: existing } = await supabase
       .from('comm_profiles')
-      .upsert(
-        {
+      .select('telegram_id')
+      .eq('telegram_id', telegramId)
+      .single()
+
+    let error
+    if (existing) {
+      // Profile exists — just update role
+      const { error: updateError } = await supabase
+        .from('comm_profiles')
+        .update({ role: 'member', role_checked_at: new Date().toISOString() })
+        .eq('telegram_id', telegramId)
+      error = updateError
+    } else {
+      // New profile — insert with placeholder first_name
+      const { error: insertError } = await supabase
+        .from('comm_profiles')
+        .insert({
           telegram_id: telegramId,
+          first_name: 'Участник',
           role: 'member',
           role_checked_at: new Date().toISOString(),
-        },
-        { onConflict: 'telegram_id' }
-      )
+        })
+      error = insertError
+    }
 
     if (error) {
-      console.error('[tribute-webhook] DB error on upsert:', error)
+      console.error('[tribute-webhook] DB error:', error)
       return NextResponse.json({ error: 'DB error' }, { status: 500 })
     }
 
