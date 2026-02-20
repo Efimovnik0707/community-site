@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/tomat/.cursor/**)",
+      "Read(//c/Users/tomat/.claude/**)",
+      "Read(//c/Users/tomat/.cursor/skills/**)",
+      "Read(//c/Users/tomat/.agents/skills/**)",
+      "WebFetch(domain:www.aizdec.me)",
+      "Bash(npx skills:*)",
+      "WebFetch(domain:blog.invitemember.com)",
+      "WebFetch(domain:yesworkflow.com)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npx shadcn@latest init:*)",
+      "Bash(npx shadcn@latest add:*)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\tomat\\.claude",
+      "C:\\Users\\tomat\\.cursor\\skills\\agent-browser",
+      "C:\\Users\\tomat\\.cursor\\skills\\content-repurposing",
+      "C:\\Users\\tomat\\.cursor\\skills\\content-strategy",
+      "C:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Social Project\\.cursor\\skills\\content-repurposing"
+    ]
+  }
+}

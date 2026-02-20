@@ -1,0 +1,24 @@
+# Dependencies
+app/node_modules/
+
+# Next.js build
+app/.next/
+app/out/
+
+# Environment variables — НИКОГДА не коммитить
+app/.env.local
+app/.env*.local
+.env.local
+.env*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
