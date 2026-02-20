@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { TelegramLoginButton } from '@/components/auth/TelegramLoginButton'
+import { TelegramBotLogin } from '@/components/auth/TelegramBotLogin'
 
 export const metadata: Metadata = {
   title: 'Войти',
@@ -18,7 +18,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <TelegramLoginButton />
+        <TelegramBotLogin />
 
         <p className="text-xs text-muted-foreground">
           Нажимая кнопку, ты соглашаешься с{' '}

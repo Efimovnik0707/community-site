@@ -14,14 +14,28 @@
       "Bash(npx shadcn@latest add:*)",
       "Bash(git checkout:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm install:*)",
+      "Bash(npx supabase:*)",
+      "Bash(npx tsc:*)",
+      "Bash(echo:*)",
+      "Bash(git push:*)",
+      "Bash(git merge:*)",
+      "Bash(git stash:*)",
+      "WebFetch(domain:gist.github.com)",
+      "WebFetch(domain:bugs.telegram.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:core.telegram.org)"
     ],
     "additionalDirectories": [
       "C:\\Users\\tomat\\.claude",
       "C:\\Users\\tomat\\.cursor\\skills\\agent-browser",
       "C:\\Users\\tomat\\.cursor\\skills\\content-repurposing",
       "C:\\Users\\tomat\\.cursor\\skills\\content-strategy",
-      "C:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Social Project\\.cursor\\skills\\content-repurposing"
+      "C:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Social Project\\.cursor\\skills\\content-repurposing",
+      "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\(members)\\tools",
+      "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\(members)\\courses",
+      "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\(members)\\courses\\[slug]"
     ]
   }
 }
