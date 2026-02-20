@@ -507,6 +507,25 @@ node_modules/
 2. Запустить `npm run dev` в папке `app/` — проверить что поднимается
 3. Следующая сессия: Supabase + миграции
 
+### Сессия 3 — 2026-02-20
+**Что сделано:**
+- Supabase: 6 таблиц с префиксом `comm_` + RLS политики (миграция применена)
+- Supabase client helpers: browser, server, service role, middleware
+- Telegram auth: HMAC verify + getChatMember + подписанная httpOnly cookie сессия
+- API routes: `/api/auth/telegram`, `/api/auth/logout`, `/api/lessons/progress`
+- Middleware: защита `/courses/*`, `/tools/*` (member), `/dashboard/*`, `/start/*` (auth)
+- Страницы: лендинг, header, `/login`, `/join`, `/tools`, `/tools/[slug]`, `/courses`, `/courses/[slug]`, `/courses/[slug]/[lessonSlug]`
+- seed.sql: 14 тестовых записей (залить вручную через Supabase SQL Editor)
+- GitHub: обе ветки (master/dev) запушены
+- Vercel: задеплоен на `community-site-gilt-seven.vercel.app`
+- Vercel URL добавлен в BotFather (`/setdomain`)
+
+**Открытые задачи:**
+- `/start` — онбординг страница для новых members
+- Seed в Supabase (SQL Editor) — залить `supabase/seed.sql`
+- Telegram Login виджет — тестировать на Vercel URL (код приходит в Telegram app)
+- InviteMember — зарегистрироваться когда будет готов к приёму платежей
+
 ---
 
 ## 18. Открытые вопросы
