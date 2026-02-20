@@ -1,7 +1,16 @@
 import { NextResponse } from 'next/server'
-import { clearSession } from '@/lib/session'
 
+const COOKIE_NAME = 'comm_session'
+
+// POST — clear cookie by setting it expired, return JSON (client handles redirect)
 export async function POST() {
-  await clearSession()
-  return NextResponse.redirect(new URL('/', process.env.NEXT_PUBLIC_SITE_URL || 'https://community-site-gilt-seven.vercel.app'), 303)
+  const res = NextResponse.json({ ok: true })
+  res.cookies.set(COOKIE_NAME, '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 0,
+    path: '/',
+  })
+  return res
 }

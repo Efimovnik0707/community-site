@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Header } from '@/components/layout/Header'
+import { getSession } from '@/lib/session'
+import { RefreshRoleButton } from '@/components/auth/RefreshRoleButton'
 
 export const metadata: Metadata = {
   title: 'Стать участником',
@@ -20,7 +22,11 @@ const features = [
   { icon: '🚀', text: 'Новый контент каждую неделю' },
 ]
 
-export default function JoinPage() {
+export default async function JoinPage() {
+  const session = await getSession()
+  const isLoggedIn = !!session
+  const isMember = session?.role === 'member' || session?.role === 'admin'
+
   return (
     <>
       <Header />
@@ -76,10 +82,24 @@ export default function JoinPage() {
             </Button>
             <p className="text-xs text-muted-foreground">
               Оплата через Stripe · Отмена без штрафов ·{' '}
-              <Link href="/login" className="underline underline-offset-4 hover:text-foreground">
-                Уже оплатил? Войди через Telegram
-              </Link>
+              {isLoggedIn ? (
+                <span>Уже оплатил? Обнови доступ ниже</span>
+              ) : (
+                <Link href="/login" className="underline underline-offset-4 hover:text-foreground">
+                  Уже оплатил? Войди через Telegram
+                </Link>
+              )}
             </p>
+
+            {/* Already paid — refresh role without re-logging in */}
+            {isLoggedIn && !isMember && (
+              <div className="pt-2 border-t border-border mt-6">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Уже вступил в группу Telegram после оплаты?
+                </p>
+                <RefreshRoleButton />
+              </div>
+            )}
           </div>
         </div>
       </main>
