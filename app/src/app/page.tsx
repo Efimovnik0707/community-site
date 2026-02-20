@@ -1,65 +1,215 @@
-import Image from "next/image";
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Header } from '@/components/layout/Header'
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <Header />
+      <main>
+        {/* Hero */}
+        <section className="relative overflow-hidden pt-24 pb-20 md:pt-32 md:pb-28">
+          {/* Glow backdrop */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[500px] w-[800px] rounded-full opacity-20"
+            style={{ background: 'radial-gradient(ellipse, oklch(0.73 0.13 186) 0%, transparent 70%)' }}
+          />
+
+          <div className="relative mx-auto max-w-4xl px-4 text-center">
+            <Badge variant="secondary" className="mb-6 text-xs font-medium">
+              AI Комьюнити · Никита Ефимов
+            </Badge>
+
+            <h1 className="text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl">
+              Применяй AI{' '}
+              <span className="text-accent-brand">в реальной работе</span>
+            </h1>
+
+            <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground md:text-xl leading-relaxed">
+              Инструменты, шаблоны и курсы по AI-автоматизации.
+              Бесплатные ресурсы — открыто. Глубокий контент, живые разборы и сообщество — для участников.
+            </p>
+
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+              <Button asChild size="lg" className="text-base font-semibold px-8">
+                <Link href="/join">Стать участником</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="text-base px-8">
+                <Link href="/tools/n8n">Смотреть ресурсы</Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* What's inside */}
+        <section className="py-20 border-t border-border">
+          <div className="mx-auto max-w-5xl px-4">
+            <h2 className="text-2xl font-bold text-center mb-12 md:text-3xl">
+              Что внутри
+            </h2>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              <FeatureCard
+                icon="⚙️"
+                title="N8N автоматизации"
+                description="Готовые воркфлоу-шаблоны, промпты для агентов, разборы реальных кейсов."
+                href="/tools/n8n"
+                badge="Доступно сейчас"
+              />
+              <FeatureCard
+                icon="🤖"
+                title="Claude Code"
+                description="Скиллы, паттерны вайбкодинга, шаблоны для разработки с AI-ассистентом."
+                href="/tools/claude-code"
+                badge="Доступно сейчас"
+              />
+              <FeatureCard
+                icon="💬"
+                title="ChatGPT"
+                description="Промт-библиотека для бизнеса и маркетинга. Системные промпты и шаблоны."
+                href="/tools/chatgpt"
+                badge="Доступно сейчас"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Courses teaser */}
+        <section className="py-20 border-t border-border">
+          <div className="mx-auto max-w-5xl px-4">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+              <div>
+                <h2 className="text-2xl font-bold md:text-3xl">Курсы</h2>
+                <p className="mt-2 text-muted-foreground">
+                  Структурированные программы — от основ до продвинутой автоматизации
+                </p>
+              </div>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/courses">Все курсы</Link>
+              </Button>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <CourseCard
+                num={1}
+                title="N8N автоматизации"
+                description="Строим рабочие автоматизации с нуля — триггеры, API, AI-агенты."
+                available
+              />
+              <CourseCard
+                num={2}
+                title="ChatGPT с нуля"
+                description="Практический курс по работе с ChatGPT для задач бизнеса и маркетинга."
+                available
+              />
+              <CourseCard
+                num={3}
+                title="Claude Code + Вайбкодинг"
+                description="Разработка с AI-ассистентом: от идеи до рабочего продукта."
+                available={false}
+              />
+              <CourseCard
+                num={4}
+                title="Агентные системы для бизнеса"
+                description="Проектирование и запуск многоагентных систем для реальных задач."
+                available={false}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="py-20 border-t border-border">
+          <div className="mx-auto max-w-2xl px-4 text-center">
+            <h2 className="text-2xl font-bold md:text-3xl">
+              Готов применять AI на практике?
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              Вступай в комьюнити — получи доступ ко всем курсам, инструментам и живым разборам.
+            </p>
+            <Button asChild size="lg" className="mt-8 text-base font-semibold px-10">
+              <Link href="/join">Стать участником</Link>
+            </Button>
+          </div>
+        </section>
       </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border py-8">
+        <div className="mx-auto max-w-5xl px-4 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
+          <span>© 2026 Никита Ефимов · AI Комьюнити</span>
+          <div className="flex gap-6">
+            <Link href="/privacy" className="hover:text-foreground transition-colors">
+              Конфиденциальность
+            </Link>
+            <a
+              href="https://t.me/yefimov_comm_bot"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground transition-colors"
+            >
+              Telegram
+            </a>
+          </div>
+        </div>
+      </footer>
+    </>
+  )
+}
+
+function FeatureCard({
+  icon,
+  title,
+  description,
+  href,
+  badge,
+}: {
+  icon: string
+  title: string
+  description: string
+  href: string
+  badge: string
+}) {
+  return (
+    <Link
+      href={href}
+      className="group block rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40 hover:bg-card/80"
+    >
+      <div className="text-3xl mb-4">{icon}</div>
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <h3 className="font-semibold">{title}</h3>
+        <Badge variant="secondary" className="text-xs shrink-0">{badge}</Badge>
+      </div>
+      <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+    </Link>
+  )
+}
+
+function CourseCard({
+  num,
+  title,
+  description,
+  available,
+}: {
+  num: number
+  title: string
+  description: string
+  available: boolean
+}) {
+  return (
+    <div className={`rounded-xl border p-5 flex gap-4 ${available ? 'border-border bg-card' : 'border-border/50 bg-card/40 opacity-60'}`}>
+      <span className="text-2xl font-bold text-accent-brand shrink-0 w-8">{num}</span>
+      <div>
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className="font-semibold text-sm">{title}</h3>
+          {!available && (
+            <Badge variant="secondary" className="text-xs">Скоро</Badge>
+          )}
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
+      </div>
     </div>
-  );
+  )
 }
