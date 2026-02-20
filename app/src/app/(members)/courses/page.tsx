@@ -12,13 +12,17 @@ export const metadata: Metadata = {
   description: 'AI-курсы по автоматизации, ChatGPT, N8N и вайбкодингу',
 }
 
-// Static course list (available + coming soon)
-// DB-driven courses show real data; coming soon are static
 const COMING_SOON = [
-  { num: 3, title: 'Claude Code + Вайбкодинг', description: 'Разработка с AI-ассистентом: от идеи до рабочего продукта.' },
-  { num: 4, title: 'Lovable', description: 'No-code разработка с AI: создаём приложения без написания кода.' },
-  { num: 5, title: 'Агентные системы для бизнеса', description: 'Проектирование многоагентных систем для реальных задач.' },
-  { num: 6, title: 'Продвижение и продажи', description: 'AI-инструменты для маркетинга, лидогенерации и продаж.' },
+  { title: 'Claude Code + Вайбкодинг', description: 'Разработка с AI-ассистентом: от идеи до рабочего продукта.' },
+  { title: 'Lovable', description: 'No-code разработка с AI: создаём приложения без написания кода.' },
+  { title: 'Агентные системы для бизнеса', description: 'Проектирование многоагентных систем для реальных задач.' },
+  { title: 'Продвижение и продажи', description: 'AI-инструменты для маркетинга, лидогенерации и продаж.' },
+]
+
+// Static fallback when DB has no courses yet
+const STATIC_COURSES = [
+  { num: 1, title: 'N8N автоматизации', description: 'Строим рабочие автоматизации с нуля — триггеры, API, AI-агенты.', slug: 'n8n' },
+  { num: 2, title: 'ChatGPT с нуля', description: 'Практический курс по работе с ChatGPT для задач бизнеса и маркетинга.', slug: 'chatgpt' },
 ]
 
 export default async function CoursesPage() {
@@ -33,13 +37,24 @@ export default async function CoursesPage() {
     .order('sort_order', { ascending: true })
 
   const publishedCourses: Course[] = courses ?? []
+  const useStatic = publishedCourses.length === 0
+
+  // All rows combined for consistent numbering
+  const availableRows = useStatic
+    ? STATIC_COURSES
+    : publishedCourses.map((c, i) => ({ num: i + 1, title: c.title, description: c.description ?? '', slug: c.slug }))
+
+  const comingSoonRows = COMING_SOON.map((c, i) => ({
+    num: availableRows.length + i + 1,
+    title: c.title,
+    description: c.description,
+  }))
 
   return (
     <>
       <Header />
       <main className="pt-24 pb-20">
         <div className="mx-auto max-w-4xl px-4">
-          {/* Header */}
           <div className="mb-10">
             <h1 className="text-3xl font-bold mb-2">Курсы</h1>
             <p className="text-muted-foreground">
@@ -52,7 +67,7 @@ export default async function CoursesPage() {
               <div className="flex-1">
                 <p className="font-medium text-sm">Доступ к курсам — для участников комьюнити</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Войди через Telegram и оформи членство, чтобы начать обучение
+                  Оформи членство, чтобы начать обучение
                 </p>
               </div>
               <Button asChild size="sm" className="shrink-0">
@@ -61,63 +76,30 @@ export default async function CoursesPage() {
             </div>
           )}
 
-          {/* Published courses from DB */}
-          {publishedCourses.length > 0 && (
-            <section className="mb-8">
-              <div className="space-y-3">
-                {publishedCourses.map((course, idx) => (
-                  <CourseRow
-                    key={course.id}
-                    num={idx + 1}
-                    title={course.title}
-                    description={course.description}
-                    slug={course.slug}
-                    available
-                    accessible={isMember}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Coming soon — static */}
-          {COMING_SOON.length > 0 && (
-            <section>
-              <div className="space-y-3">
-                {COMING_SOON.map(course => (
-                  <CourseRow
-                    key={course.num}
-                    num={publishedCourses.length + course.num - 2}
-                    title={course.title}
-                    description={course.description}
-                    available={false}
-                    accessible={false}
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Empty state for published courses */}
-          {publishedCourses.length === 0 && (
-            <div className="space-y-3 mb-8">
-              {/* Show static placeholders when DB is empty */}
-              {[
-                { num: 1, title: 'N8N автоматизации', description: 'Строим рабочие автоматизации с нуля — триггеры, API, AI-агенты.', slug: 'n8n' },
-                { num: 2, title: 'ChatGPT с нуля', description: 'Практический курс по работе с ChatGPT для задач бизнеса и маркетинга.', slug: 'chatgpt' },
-              ].map(course => (
-                <CourseRow
-                  key={course.num}
-                  num={course.num}
-                  title={course.title}
-                  description={course.description}
-                  slug={course.slug}
-                  available
-                  accessible={isMember}
-                />
-              ))}
-            </div>
-          )}
+          {/* All courses in one list */}
+          <div className="space-y-3">
+            {availableRows.map(course => (
+              <CourseRow
+                key={course.num}
+                num={course.num}
+                title={course.title}
+                description={course.description}
+                slug={course.slug}
+                available
+                accessible={isMember}
+              />
+            ))}
+            {comingSoonRows.map(course => (
+              <CourseRow
+                key={course.num}
+                num={course.num}
+                title={course.title}
+                description={course.description}
+                available={false}
+                accessible={false}
+              />
+            ))}
+          </div>
         </div>
       </main>
     </>

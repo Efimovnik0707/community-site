@@ -4,6 +4,7 @@ import { getSession } from '@/lib/session'
 
 export async function Header() {
   const session = await getSession()
+  const isMember = session?.role === 'member' || session?.role === 'admin'
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-sm">
@@ -19,6 +20,9 @@ export async function Header() {
           <Link href="/tools/claude-code" className="hover:text-foreground transition-colors">Claude Code</Link>
           <Link href="/tools/chatgpt" className="hover:text-foreground transition-colors">ChatGPT</Link>
           <Link href="/courses" className="hover:text-foreground transition-colors">Курсы</Link>
+          {isMember && (
+            <Link href="/start" className="hover:text-foreground transition-colors">С чего начать</Link>
+          )}
         </nav>
 
         {/* Auth */}
@@ -28,7 +32,7 @@ export async function Header() {
               <span className="hidden sm:block text-sm text-muted-foreground">
                 {session.firstName}
               </span>
-              {session.role === 'member' || session.role === 'admin' ? (
+              {isMember ? (
                 <Button asChild size="sm" variant="secondary">
                   <Link href="/courses">Мои курсы</Link>
                 </Button>
@@ -37,6 +41,14 @@ export async function Header() {
                   <Link href="/join">Стать участником</Link>
                 </Button>
               )}
+              <form action="/api/auth/logout" method="POST">
+                <button
+                  type="submit"
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Выйти
+                </button>
+              </form>
             </>
           ) : (
             <>
