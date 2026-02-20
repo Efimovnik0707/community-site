@@ -37,9 +37,22 @@ export async function POST(req: NextRequest) {
 
   if (!tokenRow) return NextResponse.json({ ok: true })
 
-  // Mark token as used and attach telegram user
-  const isMember = await checkPaidMembership(from.id)
-  const role = isMember ? 'member' : 'free'
+  // Check existing role in DB first — don't downgrade manually set roles
+  const { data: existingProfile } = await supabase
+    .from('comm_profiles')
+    .select('role')
+    .eq('telegram_id', from.id)
+    .single()
+
+  let role: string
+  if (existingProfile?.role === 'member' || existingProfile?.role === 'admin') {
+    // Keep existing elevated role — don't overwrite with getChatMember result
+    role = existingProfile.role
+  } else {
+    // New user or free — check Telegram group membership
+    const isMember = await checkPaidMembership(from.id)
+    role = isMember ? 'member' : 'free'
+  }
 
   await supabase
     .from('comm_auth_tokens')
