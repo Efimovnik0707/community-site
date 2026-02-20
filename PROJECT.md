@@ -490,8 +490,22 @@ node_modules/
 - Создан PROJECT.md с полной архитектурой проекта
 
 **Следующий шаг:**
-- Создать GitHub repo + инициализировать Next.js проект
-- Команда: `npx create-next-app@latest community-site --typescript --tailwind --app --src-dir --import-alias "@/*"`
+- Создать GitHub repo (приватный) → подключить remote → push
+
+### Сессия 2 — 2026-02-20
+**Что сделано:**
+- Next.js 14 + Tailwind v4 + shadcn/ui инициализирован в `app/`
+- Кастомная тёмная тема: bg `#0d0f14`, accent `#00C4B4` (cyan/teal), OKLCH
+- Установлены shadcn/ui компоненты: button, card, badge, avatar, tabs, dialog, separator, navigation-menu, skeleton, sheet, progress
+- Кириллица в Geist Sans, метаданные "Никита Ефимов | AI Комьюнити"
+- Структура папок: route groups (public)/(members)/(auth) + api/
+- `.env.example` создан с именами всех переменных
+- Git: корневой repo, коммит на `main`, ветка `dev` активна
+
+**Следующий шаг:**
+1. Создать GitHub repo (приватный), `git remote add origin <URL>`, push main + dev
+2. Запустить `npm run dev` в папке `app/` — проверить что поднимается
+3. Следующая сессия: Supabase + миграции
 
 ---
 
