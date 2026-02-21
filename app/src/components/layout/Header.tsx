@@ -22,6 +22,9 @@ export async function Header() {
           {isMember && (
             <Link href="/start" className="hover:text-foreground transition-colors">С чего начать</Link>
           )}
+          {isMember && (
+            <Link href="/streams" className="hover:text-foreground transition-colors">Эфиры</Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-3">

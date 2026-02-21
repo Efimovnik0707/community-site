@@ -91,14 +91,23 @@ export default async function ContentItemPage({ params }: Props) {
             )}
           </div>
 
-          {/* External link */}
-          {typedItem.content_url && (
-            <div className="mb-8">
-              <Button asChild size="lg" className="gap-2">
-                <a href={typedItem.content_url} target="_blank" rel="noopener noreferrer">
-                  Открыть ресурс →
-                </a>
-              </Button>
+          {/* Buttons: external link + download */}
+          {(typedItem.content_url || typedItem.download_url) && (
+            <div className="flex flex-wrap gap-3 mb-8">
+              {typedItem.content_url && (
+                <Button asChild size="lg" className="gap-2">
+                  <a href={typedItem.content_url} target="_blank" rel="noopener noreferrer">
+                    Открыть ресурс →
+                  </a>
+                </Button>
+              )}
+              {typedItem.download_url && (
+                <Button asChild size="lg" variant="outline" className="gap-2">
+                  <a href={typedItem.download_url} target="_blank" rel="noopener noreferrer" download>
+                    ↓ Скачать
+                  </a>
+                </Button>
+              )}
             </div>
           )}
 

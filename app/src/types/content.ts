@@ -10,10 +10,24 @@ export interface ContentItem {
   tool: ToolSlug
   content_url: string | null
   content_body: string | null
+  download_url: string | null
   is_premium: boolean
   tags: string[]
   sort_order: number
   published: boolean
+  created_at: string
+}
+
+export interface Stream {
+  id: string
+  slug: string
+  title: string
+  description: string | null
+  youtube_id: string | null
+  recorded_at: string | null
+  is_premium: boolean
+  published: boolean
+  sort_order: number
   created_at: string
 }
 
