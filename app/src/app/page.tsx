@@ -98,8 +98,9 @@ export default async function HomePage() {
                   <Image
                     src="/nikita.png"
                     alt="Никита Ефимов"
-                    width={128}
-                    height={128}
+                    width={424}
+                    height={435}
+                    sizes="128px"
                     className="w-full h-full object-cover object-top"
                   />
                 </div>
