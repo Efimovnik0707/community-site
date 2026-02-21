@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Suspense } from 'react'
 import { TelegramBotLogin } from '@/components/auth/TelegramBotLogin'
 
 export const metadata: Metadata = {
@@ -18,7 +19,9 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <TelegramBotLogin />
+        <Suspense>
+          <TelegramBotLogin />
+        </Suspense>
 
         <p className="text-xs text-muted-foreground">
           Нажимая кнопку, ты соглашаешься с{' '}
