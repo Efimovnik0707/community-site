@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
-import { cookies } from 'next/headers'
 import { createServiceClient } from '@/lib/supabase/server'
 import { getSession } from '@/lib/session'
+import { getSupabaseUser, hasPurchased } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { LicenseKeyForm } from '@/components/products/LicenseKeyForm'
@@ -27,17 +27,23 @@ export default async function ProductViewPage({
 
   if (!product) notFound()
 
-  // Check member access
+  // Check Telegram member access
   const session = await getSession()
   const isMember = session?.role === 'member' || session?.role === 'admin'
   const memberAccess = isMember && product.membership_included
 
-  // Check license key cookie
-  const cookieStore = await cookies()
-  const cookieKey = cookieStore.get(`ls_access_${slug}`)?.value
-  const cookieAccess = Boolean(cookieKey)
+  // Check Supabase Auth user purchase
+  const supabaseUser = await getSupabaseUser()
+  const purchaseAccess = supabaseUser
+    ? await hasPurchased(supabaseUser.id, product.id)
+    : false
 
-  const hasAccess = memberAccess || cookieAccess
+  const hasAccess = memberAccess || purchaseAccess
+
+  // Not logged in at all — redirect to login with return URL
+  if (!hasAccess && !supabaseUser && !session) {
+    redirect(`/login?redirect=/p/${slug}/view`)
+  }
 
   if (!hasAccess) {
     return (

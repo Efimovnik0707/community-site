@@ -1,11 +1,15 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { getSession } from '@/lib/session'
+import { getSupabaseUser } from '@/lib/supabase/auth'
 import { LogoutButton } from '@/components/auth/LogoutButton'
 
 export async function Header() {
   const session = await getSession()
   const isMember = session?.role === 'member' || session?.role === 'admin'
+
+  // Email/Google user (no Telegram session)
+  const supabaseUser = session ? null : await getSupabaseUser()
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-sm">
@@ -29,6 +33,7 @@ export async function Header() {
 
         <div className="flex items-center gap-3">
           {session ? (
+            // Telegram session
             <>
               <span className="hidden sm:block text-sm text-muted-foreground">
                 {session.firstName}
@@ -44,7 +49,18 @@ export async function Header() {
               )}
               <LogoutButton />
             </>
+          ) : supabaseUser ? (
+            // Email/Google session
+            <>
+              <Button asChild size="sm" variant="secondary">
+                <Link href="/my">Мои продукты</Link>
+              </Button>
+              <Button asChild size="sm">
+                <Link href="/join">Вступить</Link>
+              </Button>
+            </>
           ) : (
+            // Not logged in
             <>
               <Button asChild size="sm" variant="ghost">
                 <Link href="/login">Войти</Link>

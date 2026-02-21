@@ -37,7 +37,7 @@ export function LicenseKeyForm({ slug }: { slug: string }) {
         return
       }
 
-      // Cookie set by server — reload to show content
+      // Reload to show content (server will check comm_purchases)
       router.refresh()
     } catch {
       setError('Ошибка соединения. Попробуй снова.')

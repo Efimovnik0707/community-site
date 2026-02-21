@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase/server'
+import { createServiceClient, createClient } from '@/lib/supabase/server'
 import { activateLicenseKey } from '@/lib/lemon-squeezy'
+import { savePurchase } from '@/lib/supabase/auth'
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,7 +11,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, reason: 'missing_params' }, { status: 400 })
     }
 
-    // Look up the product to get its lemon_squeezy_product_id
+    // Look up the product
     const supabase = createServiceClient()
     const { data: product } = await supabase
       .from('comm_products')
@@ -29,17 +30,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, reason: result.reason }, { status: 400 })
     }
 
-    // Set httpOnly cookie valid for 1 year
-    const response = NextResponse.json({ ok: true })
-    response.cookies.set(`ls_access_${slug}`, key, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 365,
-      path: '/',
-    })
+    // Check if user is logged in via Supabase Auth — save purchase to DB
+    const authClient = await createClient()
+    const { data: { user } } = await authClient.auth.getUser()
 
-    return response
+    if (user) {
+      await savePurchase(user.id, product.id, key)
+    }
+
+    return NextResponse.json({ ok: true, savedToAccount: !!user })
   } catch {
     return NextResponse.json({ ok: false, reason: 'server_error' }, { status: 500 })
   }
