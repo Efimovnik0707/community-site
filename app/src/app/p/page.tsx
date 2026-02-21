@@ -40,7 +40,7 @@ export default async function ProductsPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {products.map(product => {
+              {products.map((product: { id: string; slug: string; title: string; tagline: string | null; price_display: string; membership_included: boolean }) => {
                 const memberHasFree = isMember && product.membership_included
                 return (
                   <Link
