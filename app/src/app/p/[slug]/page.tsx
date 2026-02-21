@@ -31,7 +31,6 @@ export default async function ProductPage({
   const isMember = user?.role === 'member' || user?.role === 'admin'
 
   const supabase = createServiceClient()
-  // Preview mode: admins can see unpublished products
   const baseQuery = supabase
     .from('comm_products')
     .select('id, slug, title, tagline, description_html, price_display, lemon_squeezy_url, membership_included, published')
@@ -59,8 +58,8 @@ export default async function ProductPage({
         <div className="mx-auto max-w-2xl px-4">
           {/* Header */}
           <div className="text-center mb-12">
-            <Badge variant="secondary" className="mb-4">Продукт</Badge>
-            <h1 className="text-3xl font-bold md:text-4xl mb-4">{product.title}</h1>
+            <Badge variant="secondary" className="mb-4 text-xs">Продукт</Badge>
+            <h1 className="text-3xl font-bold md:text-4xl mb-4 leading-tight">{product.title}</h1>
             {product.tagline && (
               <p className="text-lg text-muted-foreground">{product.tagline}</p>
             )}
@@ -78,8 +77,8 @@ export default async function ProductPage({
           <div className="text-center space-y-4">
             {hasAccess ? (
               <>
-                <p className="text-sm text-muted-foreground">Как участник комьюнити, у тебя есть доступ к этому продукту</p>
-                <Button asChild size="lg" className="text-base font-semibold px-10">
+                <p className="text-sm text-muted-foreground">Этот продукт доступен тебе как участнику сообщества</p>
+                <Button asChild size="lg" className="text-base font-semibold px-10 h-12">
                   <Link href={`/p/${slug}/view${isPreview ? '?preview=1' : ''}`}>Открыть продукт</Link>
                 </Button>
               </>
@@ -87,22 +86,28 @@ export default async function ProductPage({
               <>
                 <div className="flex items-center justify-center gap-3">
                   <span className="text-4xl font-bold">{product.price_display}</span>
-                  <span className="text-muted-foreground">— разовая оплата</span>
+                  <span className="text-muted-foreground text-sm">разовая оплата</span>
                 </div>
-                <Button asChild size="lg" className="text-base font-semibold px-10">
+                <Button asChild size="lg" className="text-base font-semibold px-10 h-12">
                   <a href={product.lemon_squeezy_url} target="_blank" rel="noopener noreferrer">
                     Купить сейчас
                   </a>
                 </Button>
-                <p className="text-xs text-muted-foreground">
+
+                {/* Why so cheap explanation */}
+                <p className="text-xs text-muted-foreground max-w-sm mx-auto pt-1">
+                  Хочу, чтобы ты попробовал и сам убедился.
+                </p>
+
+                <p className="text-xs text-muted-foreground pt-1">
                   Оплата через Lemon Squeezy · Карта, PayPal, Apple Pay
                   {product.membership_included && (
                     <> · Входит в{' '}
-                      <Link href="/join" className="underline underline-offset-4 hover:text-foreground">membership</Link>
+                      <Link href="/join" className="underline underline-offset-4 hover:text-foreground">членство</Link>
                     </>
                   )}
                 </p>
-                <p className="text-xs text-muted-foreground pt-2">
+                <p className="text-xs text-muted-foreground">
                   Уже купил?{' '}
                   <Link href={`/p/${slug}/view`} className="underline underline-offset-4 hover:text-foreground">
                     Ввести лицензионный ключ →
@@ -115,12 +120,13 @@ export default async function ProductPage({
           {/* Upsell */}
           {!isMember && (
             <div className="mt-16 rounded-xl border border-primary/20 bg-primary/5 p-6 text-center">
-              <p className="font-medium mb-1">Хочешь больше?</p>
+              <p className="font-medium mb-2">Хочешь больше?</p>
               <p className="text-sm text-muted-foreground mb-4">
-                В комьюнити — все курсы, живые эфиры и разборы. Плюс этот продукт{product.membership_included ? ' — бесплатно' : ' в скидку не входит'}.
+                В сообществе: все курсы, живые сессии и Telegram-чат практиков.
+                {product.membership_included ? ' Плюс этот продукт уже включён.' : ''}
               </p>
               <Button asChild size="sm" variant="outline">
-                <Link href="/join">Вступить в сообщество — $50/мес</Link>
+                <Link href="/join">Вступить за $50/мес</Link>
               </Button>
             </div>
           )}

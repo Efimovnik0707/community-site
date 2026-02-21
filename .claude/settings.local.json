@@ -43,7 +43,10 @@
       "Read(//c/Users/tomat/Desktop/Commercial/Cursor/Community Site/**)",
       "Bash(powershell -Command:*)",
       "Bash(/tmp/fix_session3.ps1:*)",
-      "Bash(powershell -File:*)"
+      "Bash(powershell -File:*)",
+      "WebFetch(domain:skills.sh)",
+      "Skill(humanizer)",
+      "Skill(humanizer:*)"
     ],
     "additionalDirectories": [
       "C:\\Users\\tomat\\.claude",

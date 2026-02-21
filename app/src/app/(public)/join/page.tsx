@@ -7,20 +7,11 @@ import { getSession } from '@/lib/session'
 import { RefreshRoleButton } from '@/components/auth/RefreshRoleButton'
 
 export const metadata: Metadata = {
-  title: 'Стать участником',
-  description: 'Доступ ко всем курсам, инструментам и AI-комьюнити Никиты Ефимова.',
+  title: 'Вступить в сообщество',
+  description: 'Научись зарабатывать с помощью AI. Курсы, живые сессии и сообщество практиков от Никиты Ефимова.',
 }
 
 const INVITE_MEMBER_URL = 'https://web.tribute.tg/s/ODh'
-
-const features = [
-  { icon: '🎓', text: 'Все курсы: N8N, ChatGPT, Claude Code и новые по мере выхода' },
-  { icon: '🛠', text: 'Премиум-шаблоны, скиллы и воркфлоу — сразу готовые к использованию' },
-  { icon: '💬', text: 'Закрытый Telegram-чат с разборами, ответами и живым общением' },
-  { icon: '🎥', text: 'Записи живых сессий и вайбкодинг-стримов' },
-  { icon: '🗺', text: 'Онбординг-программа на 4 недели — структура с первого дня' },
-  { icon: '🚀', text: 'Новый контент каждую неделю' },
-]
 
 export default async function JoinPage() {
   const session = await getSession()
@@ -31,24 +22,32 @@ export default async function JoinPage() {
     <>
       <Header />
       <main className="pt-24 pb-20">
-        <div className="mx-auto max-w-3xl px-4">
+        <div className="mx-auto max-w-2xl px-4">
+
           {/* Header */}
-          <div className="text-center mb-14">
-            <Badge variant="secondary" className="mb-4">AI Комьюнити</Badge>
-            <h1 className="text-3xl font-bold md:text-4xl">
-              Стань участником комьюнити
+          <div className="text-center mb-12">
+            <Badge variant="secondary" className="mb-4 text-xs">AI-сообщество</Badge>
+            <h1 className="text-3xl font-bold md:text-4xl leading-tight">
+              Начни зарабатывать с AI
             </h1>
-            <p className="mt-4 text-muted-foreground text-lg">
-              Полный доступ к курсам, инструментам и живому сообществу практиков
+            <p className="mt-4 text-muted-foreground">
+              Я зарабатываю 50 000+ EUR в квартал на AI-автоматизациях. Покажу как: с нуля, по шагам.
             </p>
           </div>
 
-          {/* Features */}
-          <div className="rounded-2xl border border-border bg-card p-8 mb-8">
-            <h2 className="font-semibold mb-6">Что входит в членство:</h2>
+          {/* What you get */}
+          <div className="rounded-2xl border border-border bg-card p-8 mb-6">
+            <p className="font-semibold mb-6 text-sm">Что входит:</p>
             <ul className="space-y-4">
-              {features.map((f, i) => (
-                <li key={i} className="flex items-start gap-3">
+              {[
+                { icon: '🎓', text: 'Все курсы сразу: N8N, ChatGPT, Claude Code и вайбкодинг. Новые добавляю постоянно.' },
+                { icon: '🔴', text: 'Живые сессии: смотришь как я строю реальные проекты и задаёшь вопросы.' },
+                { icon: '⚙️', text: 'Шаблоны, воркфлоу и скиллы для Claude Code. Берёшь и запускаешь.' },
+                { icon: '💬', text: 'Закрытый Telegram-чат с людьми, которые реально применяют AI.' },
+                { icon: '🗺', text: 'Онбординг на 4 недели: 15-20 минут в день, понятное следующее действие с первого дня.' },
+                { icon: '📥', text: 'Все записи сессий. Смотришь когда удобно, ничего не теряешь.' },
+              ].map((f) => (
+                <li key={f.icon} className="flex items-start gap-3">
                   <span className="text-xl shrink-0">{f.icon}</span>
                   <span className="text-sm text-muted-foreground leading-relaxed">{f.text}</span>
                 </li>
@@ -57,27 +56,31 @@ export default async function JoinPage() {
           </div>
 
           {/* Pricing */}
-          <div className="grid gap-4 sm:grid-cols-2 mb-10">
-            <PriceCard
-              label="Месяц"
-              price="$50"
-              period="/ месяц"
-              description="Полный доступ, отмена в любой момент"
-            />
-            <PriceCard
-              label="3 месяца"
-              price="$130"
-              period="/ 3 месяца"
-              description="Экономия $20 — лучший старт"
-              highlighted
-            />
+          <div className="grid gap-4 sm:grid-cols-2 mb-8">
+            <div className="rounded-2xl border border-primary/60 bg-card p-6 relative">
+              <Badge className="mb-3 text-xs absolute -top-3 left-4">Лучший старт</Badge>
+              <p className="text-sm text-muted-foreground mb-1 mt-2">3 месяца</p>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-3xl font-bold">$130</span>
+                <span className="text-sm text-muted-foreground">/3 мес</span>
+              </div>
+              <p className="text-xs text-accent-brand">Экономия $20 по сравнению с помесячным</p>
+            </div>
+            <div className="rounded-2xl border border-border bg-card p-6">
+              <p className="text-sm text-muted-foreground mb-1">Месяц</p>
+              <div className="flex items-baseline gap-1 mb-1">
+                <span className="text-3xl font-bold">$50</span>
+                <span className="text-sm text-muted-foreground">/мес</span>
+              </div>
+              <p className="text-xs text-muted-foreground">Отмена в любой момент</p>
+            </div>
           </div>
 
           {/* CTA */}
-          <div className="text-center space-y-4">
-            <Button asChild size="lg" className="w-full sm:w-auto text-base font-semibold px-12">
+          <div className="text-center space-y-3">
+            <Button asChild size="lg" className="w-full sm:w-auto text-base font-semibold px-12 h-12">
               <a href={INVITE_MEMBER_URL} target="_blank" rel="noopener noreferrer">
-                Оформить членство
+                Вступить в сообщество
               </a>
             </Button>
             <p className="text-xs text-muted-foreground">
@@ -91,9 +94,8 @@ export default async function JoinPage() {
               )}
             </p>
 
-            {/* Refresh role for any logged-in user */}
             {isLoggedIn && (
-              <div className="pt-2 border-t border-border mt-6">
+              <div className="pt-4 border-t border-border mt-6">
                 <p className="text-sm text-muted-foreground mb-3">
                   {isMember ? 'Обновить статус доступа' : 'Уже вступил в группу Telegram после оплаты?'}
                 </p>
@@ -101,42 +103,38 @@ export default async function JoinPage() {
               </div>
             )}
           </div>
+
+          {/* FAQ */}
+          <div className="mt-12 space-y-3">
+            <p className="text-sm font-semibold mb-4">Частые вопросы</p>
+            {[
+              {
+                q: 'А вдруг не подойдёт?',
+                a: 'Отменяешь в один клик. Без звонков и объяснений. Попробуй первый месяц и реши сам.',
+              },
+              {
+                q: 'У меня совсем нет технического образования',
+                a: 'Это нормально. Большинство участников начинают с нуля. Онбординг построен так, чтобы первые результаты были уже в первую неделю.',
+              },
+              {
+                q: 'Чем это отличается от обычного курса?',
+                a: 'Я строю реальные проекты прямо сейчас, ты видишь как это происходит. Записи тоже есть, но основа это живые сессии на текущих задачах.',
+              },
+            ].map((item) => (
+              <details key={item.q} className="group rounded-xl border border-border bg-card">
+                <summary className="flex items-center justify-between p-4 cursor-pointer text-sm font-medium list-none">
+                  {item.q}
+                  <svg className="shrink-0 text-muted-foreground group-open:rotate-180 transition-transform" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </summary>
+                <p className="px-4 pb-4 text-sm text-muted-foreground leading-relaxed">{item.a}</p>
+              </details>
+            ))}
+          </div>
+
         </div>
       </main>
     </>
-  )
-}
-
-function PriceCard({
-  label,
-  price,
-  period,
-  description,
-  highlighted = false,
-}: {
-  label: string
-  price: string
-  period: string
-  description: string
-  highlighted?: boolean
-}) {
-  return (
-    <div
-      className={`rounded-xl border p-6 ${
-        highlighted
-          ? 'border-primary/60 bg-card glow-accent'
-          : 'border-border bg-card'
-      }`}
-    >
-      {highlighted && (
-        <Badge className="mb-3 text-xs">Популярный</Badge>
-      )}
-      <div className="text-sm text-muted-foreground mb-1">{label}</div>
-      <div className="flex items-baseline gap-1">
-        <span className="text-3xl font-bold">{price}</span>
-        <span className="text-sm text-muted-foreground">{period}</span>
-      </div>
-      <p className="mt-2 text-xs text-muted-foreground">{description}</p>
-    </div>
   )
 }
