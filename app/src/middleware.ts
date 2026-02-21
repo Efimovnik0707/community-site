@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const COOKIE_NAME = 'comm_session'
+const COMM_SESSION = 'comm_session'
 
-// Only these routes require auth — everything else is public
-const AUTH_REQUIRED = ['/dashboard', '/start', '/admin']
+// Routes that require Telegram session (community content)
+const TELEGRAM_ONLY = ['/dashboard', '/start']
+
+// Routes that accept Telegram OR Supabase session
+// Actual role check happens in server component via getUnifiedUser()
+const ANY_AUTH = ['/admin']
+
+// Supabase auth cookie name derived from project URL at runtime
+function supabaseCookieName(): string {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
+  const ref = url.replace('https://', '').split('.')[0]
+  return `sb-${ref}-auth-token`
+}
 
 export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
@@ -24,28 +35,21 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  const sessionCookie = request.cookies.get(COOKIE_NAME)?.value
+  const hasTelegram = !!request.cookies.get(COMM_SESSION)?.value
+  const hasSupabase = !!request.cookies.get(supabaseCookieName())?.value
 
-  let isAuthenticated = false
-
-  if (sessionCookie) {
-    try {
-      const lastDot = sessionCookie.lastIndexOf('.')
-      if (lastDot !== -1) {
-        const payload = sessionCookie.slice(0, lastDot)
-        JSON.parse(Buffer.from(payload, 'base64').toString('utf-8'))
-        isAuthenticated = true
-      }
-    } catch {
-      // Invalid cookie
-    }
+  // Telegram-only routes (community content)
+  if (TELEGRAM_ONLY.some(r => pathname.startsWith(r)) && !hasTelegram) {
+    const url = new URL('/login', request.url)
+    url.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(url)
   }
 
-  const requiresAuth = AUTH_REQUIRED.some(r => pathname.startsWith(r))
-  if (requiresAuth && !isAuthenticated) {
-    const loginUrl = new URL('/login', request.url)
-    loginUrl.searchParams.set('redirect', pathname)
-    return NextResponse.redirect(loginUrl)
+  // Admin — accepts either auth; server component validates role
+  if (ANY_AUTH.some(r => pathname.startsWith(r)) && !hasTelegram && !hasSupabase) {
+    const url = new URL('/login', request.url)
+    url.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(url)
   }
 
   return NextResponse.next()

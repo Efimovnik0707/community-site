@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { getSession } from '@/lib/session'
+import { getUnifiedUser } from '@/lib/supabase/auth'
 
 const NAV = [
   { href: '/admin', label: 'Дашборд', exact: true },
@@ -11,8 +11,8 @@ const NAV = [
 ]
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const session = await getSession()
-  if (!session || session.role !== 'admin') redirect('/login')
+  const user = await getUnifiedUser()
+  if (!user || user.role !== 'admin') redirect('/login')
 
   return (
     <div className="min-h-screen flex bg-background">
