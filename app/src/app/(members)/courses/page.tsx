@@ -5,6 +5,7 @@ import { getSession } from '@/lib/session'
 import { Header } from '@/components/layout/Header'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import type { Course } from '@/types/course'
 
 export const metadata: Metadata = {
   title: 'Курсы',
@@ -22,7 +23,7 @@ export default async function CoursesPage() {
     .eq('published', true)
     .order('sort_order', { ascending: true })
 
-  const allCourses = courses ?? []
+  const allCourses: Course[] = courses ?? []
 
   return (
     <>

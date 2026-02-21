@@ -5,6 +5,7 @@ export interface Course {
   description: string | null
   cover_url: string | null
   is_premium: boolean
+  status: 'active' | 'coming_soon'
   sort_order: number
   published: boolean
   created_at: string
