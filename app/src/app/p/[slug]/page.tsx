@@ -81,6 +81,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                     </>
                   )}
                 </p>
+                <p className="text-xs text-muted-foreground pt-2">
+                  Уже купил?{' '}
+                  <Link href={`/p/${slug}/view`} className="underline underline-offset-4 hover:text-foreground">
+                    Ввести лицензионный ключ →
+                  </Link>
+                </p>
               </>
             )}
           </div>
