@@ -41,15 +41,21 @@ export async function getUnifiedUser(): Promise<UnifiedUser | null> {
 
   // Email user without active Telegram session → check bridge for linked Telegram role
   if (supabaseUser && !session) {
-    const { data } = await service
+    const { data: link } = await service
       .from('comm_auth_users')
-      .select('telegram_id, comm_profiles(role, first_name, username)')
+      .select('telegram_id')
       .eq('supabase_uid', supabaseUser.id)
       .maybeSingle()
 
-    if (data?.telegram_id) {
-      telegramId = Number(data.telegram_id)
-      const profile = data.comm_profiles as { role: string; first_name: string; username: string | null } | null
+    if (link?.telegram_id) {
+      telegramId = Number(link.telegram_id)
+
+      const { data: profile } = await service
+        .from('comm_profiles')
+        .select('role, first_name, username')
+        .eq('telegram_id', link.telegram_id)
+        .maybeSingle()
+
       if (profile) {
         const linkedRole = profile.role as 'admin' | 'member' | 'free'
         if (ROLE_RANK[linkedRole] > ROLE_RANK[role]) role = linkedRole
