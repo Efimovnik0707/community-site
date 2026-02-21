@@ -7,11 +7,12 @@ export const metadata: Metadata = {
   title: 'Войти',
 }
 
-export default function LoginPage({
+export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirect?: string; error?: string }>
+  searchParams: Promise<{ redirect?: string; error?: string; msg?: string }>
 }) {
+  const { error, msg } = await searchParams
   return (
     <main className="min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-sm space-y-8">
@@ -20,6 +21,11 @@ export default function LoginPage({
           <p className="text-sm text-muted-foreground">
             Выбери удобный способ
           </p>
+          {error && (
+            <p className="text-xs text-destructive bg-destructive/10 rounded p-2">
+              {error}{msg ? `: ${msg}` : ''}
+            </p>
+          )}
         </div>
 
         {/* Telegram — для членов сообщества */}

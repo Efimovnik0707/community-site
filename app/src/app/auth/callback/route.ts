@@ -29,17 +29,18 @@ export async function GET(req: NextRequest) {
 
   // OAuth flow (Google etc.) — exchanges code for session
   if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) return response
-    console.error('[auth/callback] exchangeCodeForSession error:', error.message)
+    // Redirect with error details for debugging
+    return NextResponse.redirect(`${origin}/login?error=exchange_failed&msg=${encodeURIComponent(error.message)}`)
   }
 
   // Magic link / email OTP flow — verifies token_hash
   if (token_hash && type) {
-    const { error } = await supabase.auth.verifyOtp({ token_hash, type })
+    const { data, error } = await supabase.auth.verifyOtp({ token_hash, type })
     if (!error) return response
-    console.error('[auth/callback] verifyOtp error:', error.message)
+    return NextResponse.redirect(`${origin}/login?error=otp_failed&msg=${encodeURIComponent(error.message)}`)
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth_failed`)
+  return NextResponse.redirect(`${origin}/login?error=no_params`)
 }
