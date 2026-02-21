@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Header } from '@/components/layout/Header'
@@ -94,15 +93,8 @@ export default async function HomePage() {
           <div className="mx-auto max-w-3xl px-4">
             <div className="flex flex-col md:flex-row gap-10 items-start">
               <div className="shrink-0">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden bg-card border border-border">
-                  <Image
-                    src="/nikita-photo.jpg"
-                    alt="Никита Ефимов"
-                    width={128}
-                    height={128}
-                    className="w-full h-full object-cover"
-                    onError={() => {}}
-                  />
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-card border border-border flex items-center justify-center shrink-0">
+                  <span className="text-3xl font-bold text-accent-brand">НЕ</span>
                 </div>
               </div>
               <div>
