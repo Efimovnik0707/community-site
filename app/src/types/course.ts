@@ -17,16 +17,24 @@ export interface CourseModule {
   sort_order: number
 }
 
+export interface AttachedFile {
+  url: string
+  name: string
+  size: number
+}
+
 export interface Lesson {
   id: string
   module_id: string
   slug: string
   title: string
   youtube_id: string | null
+  loom_id: string | null
   content: string | null
   duration: number | null
   sort_order: number
   published: boolean
+  attachments: AttachedFile[]
 }
 
 export interface LessonProgress {

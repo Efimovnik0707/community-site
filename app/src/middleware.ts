@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 const COOKIE_NAME = 'comm_session'
 
 // Only these routes require auth — everything else is public
-const AUTH_REQUIRED = ['/dashboard', '/start']
+const AUTH_REQUIRED = ['/dashboard', '/start', '/admin']
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -36,5 +36,6 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/start/:path*',
+    '/admin/:path*',
   ],
 }

@@ -106,7 +106,7 @@ export default async function LessonPage({ params }: Props) {
           {/* Lesson title */}
           <h1 className="text-2xl font-bold mb-6">{lesson.title}</h1>
 
-          {/* YouTube video */}
+          {/* Video (YouTube or Loom) */}
           {lesson.youtube_id && (
             <div className="relative aspect-video rounded-xl overflow-hidden bg-card border border-border mb-8">
               <iframe
@@ -116,6 +116,40 @@ export default async function LessonPage({ params }: Props) {
                 allowFullScreen
                 className="absolute inset-0 w-full h-full"
               />
+            </div>
+          )}
+          {lesson.loom_id && !lesson.youtube_id && (
+            <div className="relative aspect-video rounded-xl overflow-hidden bg-card border border-border mb-8">
+              <iframe
+                src={`https://www.loom.com/embed/${lesson.loom_id}`}
+                title={lesson.title}
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
+              />
+            </div>
+          )}
+
+          {/* File attachments */}
+          {lesson.attachments && lesson.attachments.length > 0 && (
+            <div className="mb-8 rounded-xl border border-border bg-card p-5">
+              <h3 className="text-sm font-semibold mb-3">Материалы к уроку</h3>
+              <div className="space-y-2">
+                {lesson.attachments.map(f => (
+                  <a
+                    key={f.url}
+                    href={f.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 text-sm hover:text-primary transition-colors"
+                  >
+                    <span className="text-muted-foreground">↓</span>
+                    <span>{f.name}</span>
+                    <span className="text-xs text-muted-foreground ml-auto">
+                      {f.size < 1024 * 1024 ? `${(f.size / 1024).toFixed(0)} KB` : `${(f.size / (1024 * 1024)).toFixed(1)} MB`}
+                    </span>
+                  </a>
+                ))}
+              </div>
             </div>
           )}
 
