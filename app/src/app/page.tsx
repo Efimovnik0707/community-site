@@ -94,16 +94,14 @@ export default async function HomePage() {
           <div className="mx-auto max-w-3xl px-4">
             <div className="flex flex-col md:flex-row gap-10 items-start">
               <div className="shrink-0">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden bg-card border border-border shrink-0">
-                  <Image
-                    src="/nikita.png"
-                    alt="Никита Ефимов"
-                    width={424}
-                    height={435}
-                    sizes="128px"
-                    className="w-full h-full object-cover object-top"
-                  />
-                </div>
+                <Image
+                  src="/nikita.png"
+                  alt="Никита Ефимов"
+                  width={424}
+                  height={435}
+                  sizes="200px"
+                  className="w-40 md:w-48 h-auto"
+                />
               </div>
               <div>
                 <p className="text-sm font-medium text-accent-brand mb-3">Кто я такой и почему тебе стоит слушать</p>
