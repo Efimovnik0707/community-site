@@ -37,7 +37,8 @@ export function LicenseKeyForm({ slug }: { slug: string }) {
         return
       }
 
-      // Reload to show content (server will check comm_purchases)
+      // Hard navigate to force server re-check of comm_purchases
+      router.push(`/p/${slug}/view`)
       router.refresh()
     } catch {
       setError('Ошибка соединения. Попробуй снова.')
