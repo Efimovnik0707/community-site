@@ -91,11 +91,11 @@ export default async function JoinPage() {
               )}
             </p>
 
-            {/* Already paid — refresh role without re-logging in */}
-            {isLoggedIn && !isMember && (
+            {/* Refresh role for any logged-in user */}
+            {isLoggedIn && (
               <div className="pt-2 border-t border-border mt-6">
                 <p className="text-sm text-muted-foreground mb-3">
-                  Уже вступил в группу Telegram после оплаты?
+                  {isMember ? 'Обновить статус доступа' : 'Уже вступил в группу Telegram после оплаты?'}
                 </p>
                 <RefreshRoleButton />
               </div>
