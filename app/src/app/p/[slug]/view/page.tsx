@@ -1,23 +1,21 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { cookies } from 'next/headers'
 import { createServiceClient } from '@/lib/supabase/server'
 import { getSession } from '@/lib/session'
-import { verifyOrder } from '@/lib/lemon-squeezy'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
+import { LicenseKeyForm } from '@/components/products/LicenseKeyForm'
 
 export const metadata: Metadata = { title: 'Ваш продукт' }
 
 export default async function ProductViewPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ slug: string }>
-  searchParams: Promise<{ order_id?: string }>
 }) {
   const { slug } = await params
-  const { order_id } = await searchParams
 
   const supabase = createServiceClient()
   const { data: product } = await supabase
@@ -29,35 +27,37 @@ export default async function ProductViewPage({
 
   if (!product) notFound()
 
-  // Check access: member with included product OR valid order
+  // Check member access
   const session = await getSession()
   const isMember = session?.role === 'member' || session?.role === 'admin'
   const memberAccess = isMember && product.membership_included
 
-  let orderAccess = false
-  if (!memberAccess && order_id) {
-    const result = await verifyOrder(order_id, product.lemon_squeezy_product_id)
-    orderAccess = result.valid
-  }
+  // Check license key cookie
+  const cookieStore = await cookies()
+  const cookieKey = cookieStore.get(`ls_access_${slug}`)?.value
+  const cookieAccess = Boolean(cookieKey)
 
-  const hasAccess = memberAccess || orderAccess
+  const hasAccess = memberAccess || cookieAccess
 
   if (!hasAccess) {
     return (
       <>
         <Header />
         <main className="pt-24 pb-20">
-          <div className="mx-auto max-w-xl px-4 text-center">
-            <div className="text-4xl mb-6">🔒</div>
-            <h1 className="text-2xl font-bold mb-3">Доступ закрыт</h1>
-            <p className="text-muted-foreground mb-8">
-              {order_id
-                ? 'Не удалось подтвердить оплату. Попробуй открыть ссылку из письма Lemon Squeezy.'
-                : 'Для просмотра этого продукта нужно его купить.'}
-            </p>
-            <Button asChild>
-              <Link href={`/p/${slug}`}>← Вернуться к продукту</Link>
-            </Button>
+          <div className="mx-auto max-w-xl px-4">
+            <div className="text-center mb-4">
+              <Link href={`/p/${slug}`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                ← {product.title}
+              </Link>
+            </div>
+            <LicenseKeyForm slug={slug} />
+            <div className="mt-6 text-center">
+              <Button asChild variant="outline" size="sm">
+                <a href={product.lemon_squeezy_url} target="_blank" rel="noopener noreferrer">
+                  Купить продукт →
+                </a>
+              </Button>
+            </div>
           </div>
         </main>
       </>
