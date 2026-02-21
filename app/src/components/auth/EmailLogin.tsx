@@ -37,12 +37,13 @@ export function EmailLogin({ redirectTo }: { redirectTo?: string }) {
   }
 
   async function handleGoogle() {
-    const callbackUrl = new URL('/auth/callback', window.location.origin)
-    if (redirectTo) callbackUrl.searchParams.set('next', redirectTo)
+    // Use exact URL without query params — Supabase validates against whitelist exact match
+    // 'next' redirect is handled after login via /my default
+    const callbackUrl = `${window.location.origin}/auth/callback`
 
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: callbackUrl.toString() },
+      options: { redirectTo: callbackUrl },
     })
   }
 
