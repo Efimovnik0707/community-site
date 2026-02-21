@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Header } from '@/components/layout/Header'
@@ -39,8 +40,8 @@ export default async function HomePage() {
               Никита Ефимов · AI-практик
             </Badge>
 
-            <h1 className="text-4xl font-bold tracking-tight md:text-6xl lg:text-7xl leading-tight">
-              Хочешь зарабатывать с помощью AI?{' '}
+            <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl leading-tight">
+              Зарабатывай с AI.{' '}
               <span className="text-accent-brand">Я покажу как.</span>
             </h1>
 
@@ -93,8 +94,14 @@ export default async function HomePage() {
           <div className="mx-auto max-w-3xl px-4">
             <div className="flex flex-col md:flex-row gap-10 items-start">
               <div className="shrink-0">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl bg-card border border-border flex items-center justify-center shrink-0">
-                  <span className="text-3xl font-bold text-accent-brand">НЕ</span>
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden bg-card border border-border shrink-0">
+                  <Image
+                    src="/nikita.png"
+                    alt="Никита Ефимов"
+                    width={128}
+                    height={128}
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
               </div>
               <div>
