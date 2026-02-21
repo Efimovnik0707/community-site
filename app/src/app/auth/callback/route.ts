@@ -4,11 +4,9 @@ import { createServerClient } from '@supabase/ssr'
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = new URL(req.url)
   const code = searchParams.get('code')
+  const token_hash = searchParams.get('token_hash')
+  const type = searchParams.get('type') as 'magiclink' | 'email' | 'recovery' | null
   const next = searchParams.get('next') ?? '/my'
-
-  if (!code) {
-    return NextResponse.redirect(`${origin}/login?error=no_code`)
-  }
 
   const response = NextResponse.redirect(`${origin}${next}`)
 
@@ -29,12 +27,19 @@ export async function GET(req: NextRequest) {
     }
   )
 
-  const { error } = await supabase.auth.exchangeCodeForSession(code)
-
-  if (error) {
+  // OAuth flow (Google etc.) — exchanges code for session
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    if (!error) return response
     console.error('[auth/callback] exchangeCodeForSession error:', error.message)
-    return NextResponse.redirect(`${origin}/login?error=auth_failed`)
   }
 
-  return response
+  // Magic link / email OTP flow — verifies token_hash
+  if (token_hash && type) {
+    const { error } = await supabase.auth.verifyOtp({ token_hash, type })
+    if (!error) return response
+    console.error('[auth/callback] verifyOtp error:', error.message)
+  }
+
+  return NextResponse.redirect(`${origin}/login?error=auth_failed`)
 }
