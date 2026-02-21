@@ -6,7 +6,24 @@ const COOKIE_NAME = 'comm_session'
 const AUTH_REQUIRED = ['/dashboard', '/start', '/admin']
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const { pathname, searchParams } = request.nextUrl
+
+  // Intercept Supabase auth codes that land at wrong URL
+  // (Supabase may redirect to Site URL instead of /auth/callback)
+  if (pathname !== '/auth/callback') {
+    const code = searchParams.get('code')
+    const tokenHash = searchParams.get('token_hash')
+    const type = searchParams.get('type')
+
+    if (code || (tokenHash && type)) {
+      const callbackUrl = new URL('/auth/callback', request.url)
+      if (code) callbackUrl.searchParams.set('code', code)
+      if (tokenHash) callbackUrl.searchParams.set('token_hash', tokenHash)
+      if (type) callbackUrl.searchParams.set('type', type)
+      return NextResponse.redirect(callbackUrl)
+    }
+  }
+
   const sessionCookie = request.cookies.get(COOKIE_NAME)?.value
 
   let isAuthenticated = false
@@ -36,8 +53,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/start/:path*',
-    '/admin/:path*',
+    '/((?!_next/static|_next/image|favicon.ico|api).*)',
   ],
 }
