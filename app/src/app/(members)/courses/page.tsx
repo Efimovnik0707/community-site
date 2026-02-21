@@ -5,25 +5,11 @@ import { getSession } from '@/lib/session'
 import { Header } from '@/components/layout/Header'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import type { Course } from '@/types/course'
 
 export const metadata: Metadata = {
   title: 'Курсы',
   description: 'AI-курсы по автоматизации, ChatGPT, N8N и вайбкодингу',
 }
-
-const COMING_SOON = [
-  { title: 'Claude Code + Вайбкодинг', description: 'Разработка с AI-ассистентом: от идеи до рабочего продукта.' },
-  { title: 'Lovable', description: 'No-code разработка с AI: создаём приложения без написания кода.' },
-  { title: 'Агентные системы для бизнеса', description: 'Проектирование многоагентных систем для реальных задач.' },
-  { title: 'Продвижение и продажи', description: 'AI-инструменты для маркетинга, лидогенерации и продаж.' },
-]
-
-// Static fallback when DB has no courses yet
-const STATIC_COURSES = [
-  { num: 1, title: 'N8N автоматизации', description: 'Строим рабочие автоматизации с нуля — триггеры, API, AI-агенты.', slug: 'n8n' },
-  { num: 2, title: 'ChatGPT с нуля', description: 'Практический курс по работе с ChatGPT для задач бизнеса и маркетинга.', slug: 'chatgpt' },
-]
 
 export default async function CoursesPage() {
   const session = await getSession()
@@ -36,19 +22,7 @@ export default async function CoursesPage() {
     .eq('published', true)
     .order('sort_order', { ascending: true })
 
-  const publishedCourses: Course[] = courses ?? []
-  const useStatic = publishedCourses.length === 0
-
-  // All rows combined for consistent numbering
-  const availableRows = useStatic
-    ? STATIC_COURSES
-    : publishedCourses.map((c, i) => ({ num: i + 1, title: c.title, description: c.description ?? '', slug: c.slug }))
-
-  const comingSoonRows = COMING_SOON.map((c, i) => ({
-    num: availableRows.length + i + 1,
-    title: c.title,
-    description: c.description,
-  }))
+  const allCourses = courses ?? []
 
   return (
     <>
@@ -76,27 +50,16 @@ export default async function CoursesPage() {
             </div>
           )}
 
-          {/* All courses in one list */}
           <div className="space-y-3">
-            {availableRows.map(course => (
+            {allCourses.map((course, i) => (
               <CourseRow
-                key={course.num}
-                num={course.num}
+                key={course.id}
+                num={i + 1}
                 title={course.title}
                 description={course.description}
                 slug={course.slug}
-                available
+                comingSoon={course.status === 'coming_soon'}
                 accessible={isMember}
-              />
-            ))}
-            {comingSoonRows.map(course => (
-              <CourseRow
-                key={course.num}
-                num={course.num}
-                title={course.title}
-                description={course.description}
-                available={false}
-                accessible={false}
               />
             ))}
           </div>
@@ -111,34 +74,36 @@ function CourseRow({
   title,
   description,
   slug,
-  available,
+  comingSoon,
   accessible,
 }: {
   num: number
   title: string
   description: string | null
   slug?: string
-  available: boolean
+  comingSoon: boolean
   accessible: boolean
 }) {
+  const canOpen = !comingSoon && accessible && !!slug
+
   const content = (
     <div
       className={`flex items-start gap-5 rounded-xl border p-5 transition-colors ${
-        available && accessible
+        canOpen
           ? 'border-border bg-card hover:border-primary/30 cursor-pointer card-hover'
-          : available && !accessible
-          ? 'border-border bg-card'
-          : 'border-border/40 bg-card/40 opacity-60'
+          : comingSoon
+          ? 'border-border/40 bg-card/40 opacity-60'
+          : 'border-border bg-card'
       }`}
     >
       <span className="text-2xl font-bold text-accent-brand shrink-0 w-7 pt-0.5">{num}</span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap mb-1">
           <h2 className="font-semibold text-sm">{title}</h2>
-          {!available && (
+          {comingSoon && (
             <Badge variant="secondary" className="text-xs">Скоро</Badge>
           )}
-          {available && !accessible && (
+          {!comingSoon && !accessible && (
             <Badge variant="secondary" className="text-xs">Членам</Badge>
           )}
         </div>
@@ -146,16 +111,16 @@ function CourseRow({
           <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
         )}
       </div>
-      {available && accessible && (
+      {canOpen && (
         <span className="text-muted-foreground text-sm shrink-0">→</span>
       )}
-      {available && !accessible && (
+      {!comingSoon && !accessible && (
         <span className="text-muted-foreground text-sm shrink-0">🔒</span>
       )}
     </div>
   )
 
-  if (available && accessible && slug) {
+  if (canOpen) {
     return <Link href={`/courses/${slug}`}>{content}</Link>
   }
   return content

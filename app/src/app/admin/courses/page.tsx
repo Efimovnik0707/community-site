@@ -7,6 +7,7 @@ interface CourseRow {
   title: string
   is_premium: boolean
   published: boolean
+  status: string
   comm_course_modules: { id: string }[]
 }
 
@@ -14,7 +15,7 @@ export default async function AdminCoursesPage() {
   const supabase = createServiceClient()
   const { data } = await supabase
     .from('comm_courses')
-    .select('id, title, is_premium, published, comm_course_modules(id)')
+    .select('id, title, is_premium, published, status, comm_course_modules(id)')
     .order('sort_order')
   const courses: CourseRow[] = data ?? []
 
@@ -41,6 +42,9 @@ export default async function AdminCoursesPage() {
               <span className="text-xs text-muted-foreground shrink-0">
                 {c.comm_course_modules?.length ?? 0} модулей
               </span>
+              {c.status === 'coming_soon' && (
+                <span className="text-xs text-muted-foreground shrink-0">Скоро</span>
+              )}
               {c.is_premium && (
                 <span className="text-xs text-primary shrink-0">Premium</span>
               )}
