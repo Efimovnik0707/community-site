@@ -5,6 +5,7 @@ import { createServiceClient } from '@/lib/supabase/server'
 import { getUnifiedUser } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
+import { AdminEditBar } from '@/components/admin/AdminEditBar'
 import type { Stream } from '@/types/content'
 
 interface Props {
@@ -40,11 +41,12 @@ export default async function StreamPage({ params }: Props) {
 
   if (!data) notFound()
   const stream = data as Stream
+  const isAdmin = user.role === 'admin'
 
   return (
     <>
       <Header />
-      <main className="pt-24 pb-20">
+      <main className={`pt-24 ${isAdmin ? 'pb-32' : 'pb-20'}`}>
         <div className="mx-auto max-w-3xl px-4">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 mb-8 text-sm text-muted-foreground">
@@ -91,6 +93,12 @@ export default async function StreamPage({ params }: Props) {
           </div>
         </div>
       </main>
+      {isAdmin && (
+        <AdminEditBar
+          label={`Редактировать эфир: ${stream.title}`}
+          href={`/admin/streams/${stream.id}`}
+        />
+      )}
     </>
   )
 }

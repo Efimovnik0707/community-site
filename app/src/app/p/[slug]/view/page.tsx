@@ -6,6 +6,7 @@ import { getUnifiedUser, hasPurchased } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { LicenseKeyForm } from '@/components/products/LicenseKeyForm'
+import { AdminEditBar } from '@/components/admin/AdminEditBar'
 
 export const metadata: Metadata = { title: 'Ваш продукт' }
 
@@ -123,7 +124,7 @@ export default async function ProductViewPage({
   return (
     <>
       <Header />
-      <main className="pt-24 pb-20">
+      <main className={`pt-24 ${isAdmin ? 'pb-32' : 'pb-20'}`}>
         <div className="mx-auto max-w-2xl px-4">
           <div className="mb-8">
             <Link href={`/p/${slug}`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -154,6 +155,12 @@ export default async function ProductViewPage({
           </div>
         </div>
       </main>
+      {isAdmin && (
+        <AdminEditBar
+          label={`Редактировать контент: ${product.title}`}
+          href={`/admin/products/${product.id}`}
+        />
+      )}
     </>
   )
 }

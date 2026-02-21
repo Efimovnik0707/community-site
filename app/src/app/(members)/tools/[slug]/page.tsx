@@ -8,6 +8,7 @@ import { ContentCard } from '@/components/content/ContentCard'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { TOOL_META, type ToolSlug, type ContentItem } from '@/types/content'
+import { AdminEditBar } from '@/components/admin/AdminEditBar'
 
 type AccessibleItem = ContentItem & { _accessible: boolean }
 import Link from 'next/link'
@@ -94,11 +95,12 @@ export default async function ToolPage({ params }: Props) {
 
   const freeItems = items.filter((i: AccessibleItem) => !i.is_premium)
   const premiumItems = items.filter((i: AccessibleItem) => i.is_premium)
+  const isAdmin = user?.role === 'admin'
 
   return (
     <>
       <Header />
-      <main className="pt-24 pb-20">
+      <main className={`pt-24 ${isAdmin ? 'pb-32' : 'pb-20'}`}>
         <div className="mx-auto max-w-4xl px-4">
           {/* Page header */}
           <div className="mb-10">
@@ -156,6 +158,12 @@ export default async function ToolPage({ params }: Props) {
           )}
         </div>
       </main>
+      {isAdmin && (
+        <AdminEditBar
+          label={`Добавить контент: ${meta.label}`}
+          href={`/admin/content/new?tool=${slug}`}
+        />
+      )}
     </>
   )
 }

@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { TOOL_META, TYPE_LABELS, type ToolSlug, type ContentItem } from '@/types/content'
 import { CopyButton } from '@/components/content/CopyButton'
+import { AdminEditBar } from '@/components/admin/AdminEditBar'
 
 interface Props {
   params: Promise<{ slug: string; itemSlug: string }>
@@ -48,11 +49,12 @@ export default async function ContentItemPage({ params }: Props) {
 
   const toolMeta = TOOL_META[slug as ToolSlug]
   const typedItem = item as ContentItem
+  const isAdmin = user?.role === 'admin'
 
   return (
     <>
       <Header />
-      <main className="pt-24 pb-20">
+      <main className={`pt-24 ${isAdmin ? 'pb-32' : 'pb-20'}`}>
         <div className="mx-auto max-w-3xl px-4">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 mb-8 text-sm text-muted-foreground">
@@ -140,6 +142,12 @@ export default async function ContentItemPage({ params }: Props) {
           </div>
         </div>
       </main>
+      {isAdmin && (
+        <AdminEditBar
+          label={`Редактировать: ${typedItem.title}`}
+          href={`/admin/content/${typedItem.id}`}
+        />
+      )}
     </>
   )
 }
