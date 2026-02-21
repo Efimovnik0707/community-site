@@ -4,6 +4,14 @@ import { Badge } from '@/components/ui/badge'
 import { Header } from '@/components/layout/Header'
 import { createServiceClient } from '@/lib/supabase/server'
 
+interface ProductCard {
+  id: string
+  slug: string
+  title: string
+  tagline: string | null
+  price_display: string
+}
+
 export default async function HomePage() {
   const supabase = createServiceClient()
   const { data: products } = await supabase
@@ -12,7 +20,7 @@ export default async function HomePage() {
     .eq('published', true)
     .order('sort_order')
 
-  const publishedProducts = products ?? []
+  const publishedProducts: ProductCard[] = products ?? []
 
   return (
     <>
