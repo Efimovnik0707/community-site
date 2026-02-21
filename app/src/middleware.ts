@@ -2,19 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const COMM_SESSION = 'comm_session'
 
-// Routes that require Telegram session (community content)
-const TELEGRAM_ONLY = ['/dashboard', '/start']
+// Community routes — require active Telegram session
+// (actual role check happens in each layout/page)
+const TELEGRAM_REQUIRED = ['/dashboard', '/start']
 
-// Routes that accept Telegram OR Supabase session
-// Actual role check happens in server component via getUnifiedUser()
-const ANY_AUTH = ['/admin']
-
-// Supabase auth cookie name derived from project URL at runtime
-function supabaseCookieName(): string {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ''
-  const ref = url.replace('https://', '').split('.')[0]
-  return `sb-${ref}-auth-token`
-}
+// /admin is intentionally excluded here — auth is handled in
+// admin/layout.tsx via getUnifiedUser() which supports both
+// Telegram session and email+linked-Telegram identity
 
 export function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
@@ -36,17 +30,8 @@ export function middleware(request: NextRequest) {
   }
 
   const hasTelegram = !!request.cookies.get(COMM_SESSION)?.value
-  const hasSupabase = !!request.cookies.get(supabaseCookieName())?.value
 
-  // Telegram-only routes (community content)
-  if (TELEGRAM_ONLY.some(r => pathname.startsWith(r)) && !hasTelegram) {
-    const url = new URL('/login', request.url)
-    url.searchParams.set('redirect', pathname)
-    return NextResponse.redirect(url)
-  }
-
-  // Admin — accepts either auth; server component validates role
-  if (ANY_AUTH.some(r => pathname.startsWith(r)) && !hasTelegram && !hasSupabase) {
+  if (TELEGRAM_REQUIRED.some(r => pathname.startsWith(r)) && !hasTelegram) {
     const url = new URL('/login', request.url)
     url.searchParams.set('redirect', pathname)
     return NextResponse.redirect(url)
