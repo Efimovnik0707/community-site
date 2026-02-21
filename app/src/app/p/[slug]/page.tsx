@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/session'
+import { getUnifiedUser } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,31 +10,52 @@ import { Badge } from '@/components/ui/badge'
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const supabase = createServiceClient()
-  const { data } = await supabase.from('comm_products').select('title, tagline').eq('slug', slug).eq('published', true).single()
+  const { data } = await supabase.from('comm_products').select('title, tagline').eq('slug', slug).single()
   if (!data) return { title: 'Продукт не найден' }
   return { title: data.title, description: data.tagline ?? undefined }
 }
 
-export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ProductPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>
+  searchParams: Promise<{ preview?: string }>
+}) {
   const { slug } = await params
+  const { preview } = await searchParams
+  const isPreview = preview === '1'
+
+  const user = await getUnifiedUser()
+  const isAdmin = user?.role === 'admin'
+  const isMember = user?.role === 'member' || user?.role === 'admin'
+
   const supabase = createServiceClient()
-  const { data: product } = await supabase
+  // Preview mode: admins can see unpublished products
+  const baseQuery = supabase
     .from('comm_products')
-    .select('id, slug, title, tagline, description_html, price_display, lemon_squeezy_url, membership_included')
+    .select('id, slug, title, tagline, description_html, price_display, lemon_squeezy_url, membership_included, published')
     .eq('slug', slug)
-    .eq('published', true)
-    .single()
+
+  const { data: product } = await (isPreview && isAdmin
+    ? baseQuery.single()
+    : baseQuery.eq('published', true).single())
 
   if (!product) notFound()
 
-  const session = await getSession()
-  const isMember = session?.role === 'member' || session?.role === 'admin'
   const hasAccess = isMember && product.membership_included
 
   return (
     <>
       <Header />
       <main className="pt-24 pb-20">
+        {/* Preview banner */}
+        {isPreview && isAdmin && !product.published && (
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-yellow-500/90 text-black text-xs font-semibold px-4 py-2 rounded-full shadow-lg">
+            Режим превью — продукт не опубликован
+          </div>
+        )}
+
         <div className="mx-auto max-w-2xl px-4">
           {/* Header */}
           <div className="text-center mb-12">

@@ -75,7 +75,18 @@ export function ProductForm({ product }: { product?: Product }) {
     <div className="max-w-3xl">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold">{product ? 'Редактировать продукт' : 'Новый продукт'}</h1>
-        <Button size="sm" onClick={handleSave} disabled={saving}>{saving ? 'Сохраняю...' : 'Сохранить'}</Button>
+        <div className="flex items-center gap-2">
+          {product?.slug && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => window.open(`/p/${product.slug}?preview=1`, '_blank')}
+            >
+              Превью
+            </Button>
+          )}
+          <Button size="sm" onClick={handleSave} disabled={saving}>{saving ? 'Сохраняю...' : 'Сохранить'}</Button>
+        </div>
       </div>
       {error && <p className="mb-4 text-sm text-destructive bg-destructive/10 px-4 py-2 rounded-lg">{error}</p>}
 

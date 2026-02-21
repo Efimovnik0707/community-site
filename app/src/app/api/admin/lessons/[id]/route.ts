@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getSession } from '@/lib/session'
+import { getUnifiedUser } from '@/lib/supabase/auth'
 import { createServiceClient } from '@/lib/supabase/server'
 
 async function requireAdmin() {
-  const session = await getSession()
-  if (!session || session.role !== 'admin') return null
-  return session
+  const user = await getUnifiedUser()
+  if (!user || user.role !== 'admin') return null
+  return user
 }
 
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

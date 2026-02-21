@@ -39,7 +39,11 @@
       "WebFetch(domain:www.anthropic.com)",
       "WebFetch(domain:docs.lemonsqueezy.com)",
       "Bash(git restore:*)",
-      "WebFetch(domain:supabase.com)"
+      "WebFetch(domain:supabase.com)",
+      "Read(//c/Users/tomat/Desktop/Commercial/Cursor/Community Site/**)",
+      "Bash(powershell -Command:*)",
+      "Bash(/tmp/fix_session3.ps1:*)",
+      "Bash(powershell -File:*)"
     ],
     "additionalDirectories": [
       "C:\\Users\\tomat\\.claude",
@@ -54,7 +58,9 @@
       "C:\\Users\\tomat\\.claude\\projects\\c--Users-tomat-Desktop-Commercial-Cursor-Community-Site\\memory",
       "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\api\\admin\\products",
       "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\admin\\products",
-      "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\p\\[slug]"
+      "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\p\\[slug]",
+      "C:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site",
+      "\\tmp"
     ]
   }
 }

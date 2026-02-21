@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getSession } from '@/lib/session'
+﻿import { NextRequest, NextResponse } from 'next/server'
+import { getUnifiedUser } from '@/lib/supabase/auth'
 import { createServiceClient } from '@/lib/supabase/server'
 
 export async function POST(req: NextRequest) {
-  const session = await getSession()
-  if (!session || session.role !== 'admin') {
+  const user = await getUnifiedUser()
+  if (!user || user.role !== 'admin') {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
