@@ -59,7 +59,7 @@ export default async function CoursesPage() {
                 .map((course, i) => (
                   <CourseRow
                     key={course.id}
-                    num={allCourses.indexOf(course) + 1}
+                    num={i + 1}
                     title={course.title}
                     description={course.description}
                     slug={course.slug}
@@ -83,10 +83,10 @@ export default async function CoursesPage() {
               <div className="space-y-2">
                 {allCourses
                   .filter(c => c.status === 'coming_soon')
-                  .map((course) => (
+                  .map((course, i) => (
                     <CourseRow
                       key={course.id}
-                      num={allCourses.indexOf(course) + 1}
+                      num={i + 1}
                       title={course.title}
                       description={course.description}
                       slug={course.slug}

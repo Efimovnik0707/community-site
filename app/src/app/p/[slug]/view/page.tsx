@@ -11,22 +11,59 @@ export const metadata: Metadata = { title: 'Ваш продукт' }
 
 export default async function ProductViewPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ preview?: string }>
 }) {
   const { slug } = await params
+  const { preview } = await searchParams
+  const isPreview = preview === '1'
+
+  const user = await getUnifiedUser()
+  const isAdmin = user?.role === 'admin'
 
   const supabase = createServiceClient()
-  const { data: product } = await supabase
+  const baseQuery = supabase
     .from('comm_products')
     .select('id, slug, title, content_html, lemon_squeezy_product_id, membership_included, lemon_squeezy_url')
     .eq('slug', slug)
-    .eq('published', true)
-    .single()
+
+  const { data: product } = await (isPreview && isAdmin
+    ? baseQuery.single()
+    : baseQuery.eq('published', true).single())
 
   if (!product) notFound()
 
-  const user = await getUnifiedUser()
+  // Admin preview mode: bypass all access checks
+  if (isPreview && isAdmin) {
+    return (
+      <>
+        <Header />
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-yellow-500/90 text-black text-xs font-semibold px-4 py-2 rounded-full shadow-lg">
+          Режим превью — контент продукта
+        </div>
+        <main className="pt-24 pb-20">
+          <div className="mx-auto max-w-2xl px-4">
+            <div className="mb-8">
+              <Link href={`/p/${slug}?preview=1`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                ← {product.title}
+              </Link>
+            </div>
+            <h1 className="text-2xl font-bold mb-8">{product.title}</h1>
+            {product.content_html ? (
+              <div
+                className="prose prose-invert prose-sm max-w-none"
+                dangerouslySetInnerHTML={{ __html: product.content_html }}
+              />
+            ) : (
+              <p className="text-muted-foreground">Контент продукта скоро появится.</p>
+            )}
+          </div>
+        </main>
+      </>
+    )
+  }
 
   const isMember = user?.role === 'member' || user?.role === 'admin'
   const memberAccess = isMember && product.membership_included

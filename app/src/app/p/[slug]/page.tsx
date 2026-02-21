@@ -80,7 +80,7 @@ export default async function ProductPage({
               <>
                 <p className="text-sm text-muted-foreground">Как участник комьюнити, у тебя есть доступ к этому продукту</p>
                 <Button asChild size="lg" className="text-base font-semibold px-10">
-                  <Link href={`/p/${slug}/view`}>Открыть продукт</Link>
+                  <Link href={`/p/${slug}/view${isPreview ? '?preview=1' : ''}`}>Открыть продукт</Link>
                 </Button>
               </>
             ) : (
