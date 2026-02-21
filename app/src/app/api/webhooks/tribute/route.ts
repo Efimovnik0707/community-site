@@ -90,6 +90,21 @@ export async function POST(req: NextRequest) {
     }
 
     console.log('[tribute-webhook] Granted member role to', telegramId)
+
+    // Notify owner in Telegram
+    const botToken = process.env.TELEGRAM_BOT_TOKEN
+    const ownerChatId = process.env.TELEGRAM_OWNER_ID
+    if (botToken && ownerChatId) {
+      const eventLabel = name === 'new_subscription' ? '🎉 Новая подписка' : '🔄 Продление подписки'
+      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: ownerChatId,
+          text: `${eventLabel}\n\nTelegram ID: ${telegramId}\nСумма: ${(event as any).payload?.amount ?? '?'} ${((event as any).payload?.currency ?? '').toUpperCase()}`,
+        }),
+      }).catch(() => {}) // не блокируем если не отправилось
+    }
   } else if (name === 'cancelled_subscription') {
     // Only downgrade if not manually set to admin
     const { data: profile } = await supabase

@@ -6,6 +6,7 @@ import { Header } from '@/components/layout/Header'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import { LessonCheckbox } from '@/components/content/LessonCheckbox'
 import type { Course, CourseModule, Lesson, LessonProgress } from '@/types/course'
 
 interface Props {
@@ -166,40 +167,28 @@ function LessonRow({
     : null
 
   return (
-    <Link
-      href={`/courses/${courseSlug}/${lesson.slug}`}
-      className="flex items-center gap-4 rounded-lg border border-border bg-card px-4 py-3 hover:border-primary/30 transition-colors group"
-    >
-      {/* Completion indicator */}
-      <div
-        className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ${
-          completed
-            ? 'border-primary bg-primary'
-            : 'border-border group-hover:border-primary/50'
-        }`}
-      >
-        {completed && (
-          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        )}
-      </div>
+    <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 hover:border-primary/30 transition-colors group">
+      {/* Clickable completion checkbox */}
+      <LessonCheckbox lessonId={lesson.id} isCompleted={completed} />
 
-      <div className="flex-1 min-w-0">
-        <span className={`text-sm ${completed ? 'text-muted-foreground' : ''}`}>
+      {/* Row link */}
+      <Link
+        href={`/courses/${courseSlug}/${lesson.slug}`}
+        className="flex-1 flex items-center gap-3 min-w-0"
+      >
+        <span className={`text-sm flex-1 min-w-0 ${completed ? 'text-muted-foreground' : ''}`}>
           {lesson.title}
         </span>
-      </div>
-
-      <div className="flex items-center gap-3 shrink-0">
-        {lesson.youtube_id && (
-          <Badge variant="secondary" className="text-xs">Видео</Badge>
-        )}
-        {durationStr && (
-          <span className="text-xs text-muted-foreground">{durationStr}</span>
-        )}
-        <span className="text-muted-foreground text-sm">→</span>
-      </div>
-    </Link>
+        <div className="flex items-center gap-3 shrink-0">
+          {lesson.youtube_id && (
+            <Badge variant="secondary" className="text-xs">Видео</Badge>
+          )}
+          {durationStr && (
+            <span className="text-xs text-muted-foreground">{durationStr}</span>
+          )}
+          <span className="text-muted-foreground text-sm">→</span>
+        </div>
+      </Link>
+    </div>
   )
 }
