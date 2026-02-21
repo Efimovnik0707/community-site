@@ -6,6 +6,7 @@ import { getUnifiedUser } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { AdminEditBar } from '@/components/admin/AdminEditBar'
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
@@ -47,10 +48,10 @@ export default async function ProductPage({
   return (
     <>
       <Header />
-      <main className="pt-24 pb-20">
+      <main className={`pt-24 ${isAdmin ? 'pb-32' : 'pb-20'}`}>
         {/* Preview banner */}
         {isPreview && isAdmin && !product.published && (
-          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-yellow-500/90 text-black text-xs font-semibold px-4 py-2 rounded-full shadow-lg">
+          <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-40 bg-yellow-500/90 text-black text-xs font-semibold px-4 py-2 rounded-full shadow-lg">
             Режим превью — продукт не опубликован
           </div>
         )}
@@ -132,6 +133,12 @@ export default async function ProductPage({
           )}
         </div>
       </main>
+      {isAdmin && (
+        <AdminEditBar
+          label={`Редактировать продукт: ${product.title}`}
+          href={`/admin/products/${product.id}`}
+        />
+      )}
     </>
   )
 }

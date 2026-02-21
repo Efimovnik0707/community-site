@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { LessonCheckbox } from '@/components/content/LessonCheckbox'
+import { AdminEditBar } from '@/components/admin/AdminEditBar'
 import type { Course, CourseModule, Lesson, LessonProgress } from '@/types/course'
 
 interface Props {
@@ -80,10 +81,12 @@ export default async function CoursePage({ params }: Props) {
   const totalLessons = lessons.length
   const completedCount = lessons.filter(l => completedIds.has(l.id)).length
 
+  const isAdmin = user.role === 'admin'
+
   return (
     <>
       <Header />
-      <main className="pt-24 pb-20">
+      <main className={`pt-24 ${isAdmin ? 'pb-32' : 'pb-20'}`}>
         <div className="mx-auto max-w-3xl px-4">
           {/* Course header */}
           <div className="mb-10">
@@ -151,6 +154,12 @@ export default async function CoursePage({ params }: Props) {
           )}
         </div>
       </main>
+      {isAdmin && (
+        <AdminEditBar
+          label={`Редактировать курс: ${(course as Course).title}`}
+          href={`/admin/courses/${course.id}`}
+        />
+      )}
     </>
   )
 }
