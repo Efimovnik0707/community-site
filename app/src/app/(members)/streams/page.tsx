@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/session'
+import { getUnifiedUser } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Badge } from '@/components/ui/badge'
 import type { Stream } from '@/types/content'
@@ -13,9 +13,9 @@ export const metadata: Metadata = {
 }
 
 export default async function StreamsPage() {
-  const session = await getSession()
-  if (!session) redirect('/login')
-  const isMember = session.role === 'member' || session.role === 'admin'
+  const user = await getUnifiedUser()
+  if (!user) redirect('/login')
+  const isMember = user.role === 'member' || user.role === 'admin'
   if (!isMember) redirect('/join')
 
   const supabase = createServiceClient()

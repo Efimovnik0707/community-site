@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/session'
+import { getUnifiedUser } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 }
 
 export default async function CoursesPage() {
-  const session = await getSession()
-  const isMember = session?.role === 'member' || session?.role === 'admin'
+  const user = await getUnifiedUser()
+  const isMember = user?.role === 'member' || user?.role === 'admin'
 
   const supabase = createServiceClient()
   const { data: courses } = await supabase

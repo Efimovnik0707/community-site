@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { getSession } from '@/lib/session'
+import { getUnifiedUser } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -32,10 +32,10 @@ const WEEK_4 = [
 ]
 
 export default async function StartPage() {
-  const session = await getSession()
-  if (!session) redirect('/login')
+  const user = await getUnifiedUser()
+  if (!user) redirect('/login')
 
-  const isMember = session.role === 'member' || session.role === 'admin'
+  const isMember = user.role === 'member' || user.role === 'admin'
 
   return (
     <>
@@ -46,7 +46,7 @@ export default async function StartPage() {
           <div className="mb-12">
             <Badge variant="secondary" className="mb-4">Онбординг</Badge>
             <h1 className="text-3xl font-bold mb-3">
-              Привет, {session.firstName} 👋
+              Привет, {user.firstName ?? 'друг'} 👋
             </h1>
             <p className="text-muted-foreground text-lg">
               Добро пожаловать в AI Комьюнити. Вот план на первые 4 недели — следуй ему и сразу начнёшь применять AI в работе.

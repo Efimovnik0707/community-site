@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import { Metadata } from 'next'
 import { createServiceClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/session'
+import { getUnifiedUser } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -27,11 +27,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CoursePage({ params }: Props) {
   const { slug } = await params
-  const session = await getSession()
+  const user = await getUnifiedUser()
 
   // Require membership
-  if (!session) redirect('/login')
-  const isMember = session.role === 'member' || session.role === 'admin'
+  if (!user) redirect('/login')
+  const isMember = user.role === 'member' || user.role === 'admin'
   if (!isMember) redirect('/join')
 
   const supabase = createServiceClient()
@@ -66,13 +66,15 @@ export default async function CoursePage({ params }: Props) {
     lessons = data ?? []
   }
 
-  // Fetch progress
+  // Fetch progress (only if Telegram identity available)
   let progress: LessonProgress[] = []
-  const { data: progressData } = await supabase
-    .from('comm_lesson_progress')
-    .select('lesson_id, completed')
-    .eq('telegram_id', session.telegramId)
-  progress = progressData ?? []
+  if (user.telegramId) {
+    const { data: progressData } = await supabase
+      .from('comm_lesson_progress')
+      .select('lesson_id, completed')
+      .eq('telegram_id', user.telegramId)
+    progress = progressData ?? []
+  }
 
   const completedIds = new Set(progress.filter(p => p.completed).map(p => p.lesson_id))
   const totalLessons = lessons.length

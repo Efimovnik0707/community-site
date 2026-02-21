@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 
 interface Props {
   lessonId: string
-  telegramId: number
+  telegramId?: number
   isCompleted: boolean
 }
 

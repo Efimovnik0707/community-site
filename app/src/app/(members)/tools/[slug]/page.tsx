@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/session'
+import { getUnifiedUser } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { ContentCard } from '@/components/content/ContentCard'
 import { Badge } from '@/components/ui/badge'
@@ -50,8 +50,8 @@ export default async function ToolPage({ params }: Props) {
     )
   }
 
-  const session = await getSession()
-  const isMember = session?.role === 'member' || session?.role === 'admin'
+  const user = await getUnifiedUser()
+  const isMember = user?.role === 'member' || user?.role === 'admin'
 
   // Free users: use anon client (RLS filters premium)
   // Members: use service client to get all published items

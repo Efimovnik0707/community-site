@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import { Metadata } from 'next'
 import { createServiceClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/session'
+import { getUnifiedUser } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { LessonCompleteButton } from '@/components/content/LessonCompleteButton'
@@ -25,10 +25,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LessonPage({ params }: Props) {
   const { slug, lessonSlug } = await params
-  const session = await getSession()
+  const user = await getUnifiedUser()
 
-  if (!session) redirect('/login')
-  const isMember = session.role === 'member' || session.role === 'admin'
+  if (!user) redirect('/login')
+  const isMember = user.role === 'member' || user.role === 'admin'
   if (!isMember) redirect('/join')
 
   const supabase = createServiceClient()
@@ -77,13 +77,13 @@ export default async function LessonPage({ params }: Props) {
   const prevLesson = currentIdx > 0 ? lessons[currentIdx - 1] : null
   const nextLesson = currentIdx < lessons.length - 1 ? lessons[currentIdx + 1] : null
 
-  // Check completion
-  const { data: progress } = await supabase
+  // Check completion (only if Telegram identity available)
+  const { data: progress } = user.telegramId ? await supabase
     .from('comm_lesson_progress')
     .select('completed')
-    .eq('telegram_id', session.telegramId)
+    .eq('telegram_id', user.telegramId)
     .eq('lesson_id', lesson.id)
-    .single()
+    .single() : { data: null }
 
   const isCompleted = progress?.completed ?? false
 
@@ -164,7 +164,7 @@ export default async function LessonPage({ params }: Props) {
           <div className="border-t border-border pt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <LessonCompleteButton
               lessonId={lesson.id}
-              telegramId={session.telegramId}
+              telegramId={user.telegramId}
               isCompleted={isCompleted}
             />
 

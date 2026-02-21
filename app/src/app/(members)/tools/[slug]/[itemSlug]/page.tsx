@@ -2,7 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/session'
+import { getUnifiedUser } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ContentItemPage({ params }: Props) {
   const { slug, itemSlug } = await params
-  const session = await getSession()
-  const isMember = session?.role === 'member' || session?.role === 'admin'
+  const user = await getUnifiedUser()
+  const isMember = user?.role === 'member' || user?.role === 'admin'
 
   const supabase = createServiceClient()
   const { data: item } = await supabase
