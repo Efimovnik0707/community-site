@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/server'
-import { validateLicenseKey } from '@/lib/lemon-squeezy'
+import { activateLicenseKey } from '@/lib/lemon-squeezy'
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, reason: 'product_not_found' }, { status: 404 })
     }
 
-    const result = await validateLicenseKey(key, product.lemon_squeezy_product_id)
+    const result = await activateLicenseKey(key, product.lemon_squeezy_product_id)
 
     if (!result.valid) {
       return NextResponse.json({ ok: false, reason: result.reason }, { status: 400 })
