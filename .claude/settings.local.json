@@ -34,7 +34,12 @@
       "Bash(curl:*)",
       "Bash(find:*)",
       "Bash(ls:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:www.anthropic.com)",
+      "WebFetch(domain:docs.lemonsqueezy.com)",
+      "Bash(git restore:*)",
+      "WebFetch(domain:supabase.com)"
     ],
     "additionalDirectories": [
       "C:\\Users\\tomat\\.claude",

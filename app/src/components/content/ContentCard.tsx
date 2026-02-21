@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { TYPE_LABELS, type ContentItem } from '@/types/content'
 
 interface Props {
@@ -11,34 +10,27 @@ interface Props {
 export function ContentCard({ item, accessible }: Props) {
   const isLocked = !accessible && item.is_premium
 
-  return (
+  const cardContent = (
     <div
-      className={`relative rounded-xl border p-5 flex flex-col gap-3 transition-colors ${
+      className={`group relative rounded-2xl border p-5 flex flex-col gap-3 transition-all duration-200 h-full ${
         isLocked
-          ? 'border-border/40 bg-card/40'
-          : 'border-border bg-card hover:border-primary/30'
+          ? 'border-border/30 bg-card/30'
+          : 'border-border bg-card hover:border-primary/40 hover:shadow-sm'
       }`}
     >
-      {/* Top row */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          <Badge variant="outline" className="text-xs">
-            {TYPE_LABELS[item.type]}
-          </Badge>
-          {item.is_premium && (
-            <Badge className="text-xs bg-primary/10 text-primary border-primary/20">
-              Members
-            </Badge>
-          )}
-        </div>
+      {/* Type badge + lock */}
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70">
+          {TYPE_LABELS[item.type]}
+        </span>
         {isLocked && (
-          <span className="text-muted-foreground text-sm shrink-0">🔒</span>
+          <span className="text-muted-foreground/50 text-xs">🔒</span>
         )}
       </div>
 
-      {/* Content */}
-      <div>
-        <h3 className={`font-semibold text-sm leading-snug mb-1 ${isLocked ? 'text-muted-foreground' : ''}`}>
+      {/* Title + description */}
+      <div className="flex-1">
+        <h3 className={`font-semibold text-sm leading-snug mb-1.5 ${isLocked ? 'text-muted-foreground/60' : 'group-hover:text-primary transition-colors'}`}>
           {item.title}
         </h3>
         {item.description && (
@@ -48,13 +40,13 @@ export function ContentCard({ item, accessible }: Props) {
         )}
       </div>
 
-      {/* Tags */}
+      {/* Tags — visually distinct: small, muted, no border */}
       {item.tags && item.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1.5">
           {item.tags.map(tag => (
             <span
               key={tag}
-              className="text-xs px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground"
+              className="text-[10px] px-1.5 py-0.5 rounded text-muted-foreground/60 bg-muted/40 font-medium"
             >
               {tag}
             </span>
@@ -63,25 +55,35 @@ export function ContentCard({ item, accessible }: Props) {
       )}
 
       {/* Action */}
-      <div className="mt-auto pt-1">
+      <div className="pt-1 border-t border-border/50">
         {isLocked ? (
-          <Button asChild size="sm" variant="outline" className="w-full text-xs">
-            <Link href="/join">Открыть доступ</Link>
-          </Button>
+          <span className="text-xs text-muted-foreground/60">Только для участников</span>
         ) : item.content_url ? (
-          <Button asChild size="sm" variant="secondary" className="w-full text-xs">
-            <a href={item.content_url} target="_blank" rel="noopener noreferrer">
-              Открыть →
-            </a>
-          </Button>
+          <span className="text-xs font-medium text-primary/80">Открыть ресурс</span>
         ) : item.content_body ? (
-          <Button asChild size="sm" variant="secondary" className="w-full text-xs">
-            <Link href={`/tools/${item.tool}/${item.slug}`}>
-              Читать →
-            </Link>
-          </Button>
+          <span className="text-xs font-medium text-primary/80">Читать</span>
         ) : null}
       </div>
     </div>
   )
+
+  if (isLocked) return cardContent
+
+  if (item.content_url) {
+    return (
+      <a href={item.content_url} target="_blank" rel="noopener noreferrer" className="block h-full">
+        {cardContent}
+      </a>
+    )
+  }
+
+  if (item.content_body) {
+    return (
+      <Link href={`/tools/${item.tool}/${item.slug}`} className="block h-full">
+        {cardContent}
+      </Link>
+    )
+  }
+
+  return cardContent
 }

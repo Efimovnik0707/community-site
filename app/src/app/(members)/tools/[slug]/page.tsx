@@ -113,7 +113,7 @@ export default async function ToolPage({ params }: Props) {
           {freeItems.length > 0 && (
             <section className="mb-12">
               <div className="flex items-center gap-2 mb-5">
-                <h2 className="text-lg font-semibold">Бесплатно</h2>
+                <h2 className="text-lg font-semibold">Открытый доступ</h2>
                 <Badge variant="secondary">{freeItems.length}</Badge>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
