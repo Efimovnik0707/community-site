@@ -2,8 +2,18 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Header } from '@/components/layout/Header'
+import { createServiceClient } from '@/lib/supabase/server'
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = createServiceClient()
+  const { data: products } = await supabase
+    .from('comm_products')
+    .select('id, slug, title, tagline, price_display')
+    .eq('published', true)
+    .order('sort_order')
+
+  const publishedProducts = products ?? []
+
   return (
     <>
       <Header />
@@ -42,6 +52,36 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* Products — only shown if published products exist */}
+        {publishedProducts.length > 0 && (
+          <section className="py-20 border-t border-border">
+            <div className="mx-auto max-w-5xl px-4">
+              <div className="text-center mb-10">
+                <h2 className="text-2xl font-bold md:text-3xl">Продукты</h2>
+                <p className="mt-2 text-muted-foreground">Готовые инструменты и инструкции — разовая покупка</p>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {publishedProducts.map(p => (
+                  <Link
+                    key={p.id}
+                    href={`/p/${p.slug}`}
+                    className="group block rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/40"
+                  >
+                    <div className="flex items-start justify-between gap-2 mb-3">
+                      <h3 className="font-semibold text-sm leading-snug">{p.title}</h3>
+                      <span className="text-accent-brand font-bold text-sm shrink-0">{p.price_display}</span>
+                    </div>
+                    {p.tagline && (
+                      <p className="text-xs text-muted-foreground leading-relaxed">{p.tagline}</p>
+                    )}
+                    <p className="mt-4 text-xs text-primary group-hover:underline">Купить →</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* What's inside */}
         <section className="py-20 border-t border-border">

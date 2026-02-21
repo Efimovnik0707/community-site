@@ -27,7 +27,14 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:core.telegram.org)",
       "Bash(\"c:/Users/tomat/Desktop/Commercial/Cursor/Community Site/app/src/middleware.ts\":*)",
-      "Bash(\"c:/Users/tomat/Desktop/Commercial/Cursor/Community Site/app/src/components/layout/Header.tsx\":*)"
+      "Bash(\"c:/Users/tomat/Desktop/Commercial/Cursor/Community Site/app/src/components/layout/Header.tsx\":*)",
+      "WebFetch(domain:wiki.tribute.tg)",
+      "Bash(git ls-tree:*)",
+      "Bash(python3:*)",
+      "Bash(curl:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(git rm:*)"
     ],
     "additionalDirectories": [
       "C:\\Users\\tomat\\.claude",
@@ -38,7 +45,11 @@
       "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\(members)\\tools",
       "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\(members)\\courses",
       "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\(members)\\courses\\[slug]",
-      "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\(members)\\tools\\[slug]"
+      "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\(members)\\tools\\[slug]",
+      "C:\\Users\\tomat\\.claude\\projects\\c--Users-tomat-Desktop-Commercial-Cursor-Community-Site\\memory",
+      "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\api\\admin\\products",
+      "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\admin\\products",
+      "c:\\Users\\tomat\\Desktop\\Commercial\\Cursor\\Community Site\\app\\src\\app\\p\\[slug]"
     ]
   }
 }
