@@ -2,10 +2,12 @@ import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 import { getUserPurchases } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { LogoutEmailButton } from '@/components/auth/LogoutEmailButton'
+import { LinkTelegramButton } from '@/components/auth/LinkTelegramButton'
 
 export const metadata: Metadata = { title: 'Мои продукты' }
 
@@ -19,6 +21,18 @@ export default async function MyPage() {
 
   const purchases = await getUserPurchases(user.id)
 
+  // Check if Telegram is linked
+  const service = createServiceClient()
+  const { data: linkedAccount } = await service
+    .from('comm_auth_users')
+    .select('telegram_id, comm_profiles(first_name, username)')
+    .eq('supabase_uid', user.id)
+    .maybeSingle()
+
+  const linkedTelegram = linkedAccount?.telegram_id
+    ? (linkedAccount.comm_profiles as { first_name: string; username: string | null } | null)
+    : null
+
   return (
     <>
       <Header />
@@ -30,6 +44,25 @@ export default async function MyPage() {
               <p className="text-sm text-muted-foreground mt-1">{user.email}</p>
             </div>
             <LogoutEmailButton />
+          </div>
+
+          {/* Telegram linking */}
+          <div className="mb-8 rounded-xl border border-border bg-card p-5">
+            <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide mb-3">Telegram</p>
+            {linkedTelegram ? (
+              <p className="text-sm">
+                Привязан: <span className="font-medium">
+                  {linkedTelegram.username ? `@${linkedTelegram.username}` : linkedTelegram.first_name}
+                </span>
+              </p>
+            ) : (
+              <div className="flex flex-col gap-1.5">
+                <p className="text-sm text-muted-foreground">
+                  Привяжи Telegram, чтобы получить доступ к материалам сообщества
+                </p>
+                <LinkTelegramButton />
+              </div>
+            )}
           </div>
 
           {purchases.length === 0 ? (
