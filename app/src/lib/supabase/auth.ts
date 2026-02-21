@@ -1,9 +1,76 @@
 import { createClient } from './server'
 import { createServiceClient } from './server'
+import { getSession } from '@/lib/session'
 
 export interface SupabaseUser {
   id: string
   email: string | null
+}
+
+export interface UnifiedUser {
+  telegramId?: number
+  supabaseUid?: string
+  email?: string | null
+  firstName?: string
+  username?: string | null
+  role: 'admin' | 'member' | 'free'
+}
+
+const ROLE_RANK = { admin: 2, member: 1, free: 0 } as const
+
+/**
+ * Returns a unified identity merging Telegram session + Supabase auth.
+ * Checks comm_auth_users bridge to find linked accounts.
+ */
+export async function getUnifiedUser(): Promise<UnifiedUser | null> {
+  const [session, supabaseUser] = await Promise.all([
+    getSession(),
+    getSupabaseUser(),
+  ])
+
+  if (!session && !supabaseUser) return null
+
+  const service = createServiceClient()
+
+  let telegramId = session ? Number(session.telegramId) : undefined
+  let role = (session?.role ?? 'free') as 'admin' | 'member' | 'free'
+  let supabaseUid = supabaseUser?.id
+  let email = supabaseUser?.email ?? null
+  let firstName = session?.firstName
+  let username = session?.username ?? null
+
+  // Email user without active Telegram session → check bridge for linked Telegram role
+  if (supabaseUser && !session) {
+    const { data } = await service
+      .from('comm_auth_users')
+      .select('telegram_id, comm_profiles(role, first_name, username)')
+      .eq('supabase_uid', supabaseUser.id)
+      .maybeSingle()
+
+    if (data?.telegram_id) {
+      telegramId = Number(data.telegram_id)
+      const profile = data.comm_profiles as { role: string; first_name: string; username: string | null } | null
+      if (profile) {
+        const linkedRole = profile.role as 'admin' | 'member' | 'free'
+        if (ROLE_RANK[linkedRole] > ROLE_RANK[role]) role = linkedRole
+        firstName = firstName ?? profile.first_name
+        username = username ?? profile.username
+      }
+    }
+  }
+
+  // Telegram user without active Supabase session → check bridge for linked supabase_uid
+  if (session && !supabaseUser) {
+    const { data } = await service
+      .from('comm_auth_users')
+      .select('supabase_uid')
+      .eq('telegram_id', session.telegramId)
+      .maybeSingle()
+
+    if (data?.supabase_uid) supabaseUid = data.supabase_uid
+  }
+
+  return { telegramId, supabaseUid, email, firstName, username, role }
 }
 
 /** Get current Supabase Auth session user (email/Google login). */

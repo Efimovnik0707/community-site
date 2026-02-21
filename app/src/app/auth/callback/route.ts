@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import { createServiceClient } from '@/lib/supabase/server'
+import { getSession } from '@/lib/session'
 
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = new URL(req.url)
@@ -27,20 +29,41 @@ export async function GET(req: NextRequest) {
     }
   )
 
+  let supabaseUid: string | null = null
+
   // OAuth flow (Google etc.) — exchanges code for session
   if (code) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) return response
-    // Redirect with error details for debugging
-    return NextResponse.redirect(`${origin}/login?error=exchange_failed&msg=${encodeURIComponent(error.message)}`)
+    if (error) {
+      return NextResponse.redirect(`${origin}/login?error=exchange_failed&msg=${encodeURIComponent(error.message)}`)
+    }
+    supabaseUid = data.user?.id ?? null
   }
 
   // Magic link / email OTP flow — verifies token_hash
   if (token_hash && type) {
     const { data, error } = await supabase.auth.verifyOtp({ token_hash, type })
-    if (!error) return response
-    return NextResponse.redirect(`${origin}/login?error=otp_failed&msg=${encodeURIComponent(error.message)}`)
+    if (error) {
+      return NextResponse.redirect(`${origin}/login?error=otp_failed&msg=${encodeURIComponent(error.message)}`)
+    }
+    supabaseUid = data.user?.id ?? null
   }
 
-  return NextResponse.redirect(`${origin}/login?error=no_params`)
+  if (!supabaseUid) {
+    return NextResponse.redirect(`${origin}/login?error=no_params`)
+  }
+
+  // Auto-link Telegram session if active — merge identities in comm_auth_users
+  const telegramSession = await getSession()
+  if (telegramSession?.telegramId) {
+    const service = createServiceClient()
+    await service
+      .from('comm_auth_users')
+      .upsert(
+        { supabase_uid: supabaseUid, telegram_id: telegramSession.telegramId },
+        { onConflict: 'supabase_uid' }
+      )
+  }
+
+  return response
 }

@@ -2,8 +2,7 @@ import { Metadata } from 'next'
 import { notFound, redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase/server'
-import { getSession } from '@/lib/session'
-import { getSupabaseUser, hasPurchased } from '@/lib/supabase/auth'
+import { getUnifiedUser, hasPurchased } from '@/lib/supabase/auth'
 import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { LicenseKeyForm } from '@/components/products/LicenseKeyForm'
@@ -27,25 +26,24 @@ export default async function ProductViewPage({
 
   if (!product) notFound()
 
-  // Check Telegram member access
-  const session = await getSession()
-  const isMember = session?.role === 'member' || session?.role === 'admin'
+  const user = await getUnifiedUser()
+
+  const isMember = user?.role === 'member' || user?.role === 'admin'
   const memberAccess = isMember && product.membership_included
-
-  // Check Supabase Auth user purchase
-  const supabaseUser = await getSupabaseUser()
-  const purchaseAccess = supabaseUser
-    ? await hasPurchased(supabaseUser.id, product.id)
+  const purchaseAccess = user?.supabaseUid
+    ? await hasPurchased(user.supabaseUid, product.id)
     : false
-
   const hasAccess = memberAccess || purchaseAccess
 
   // Not logged in at all — redirect to login with return URL
-  if (!hasAccess && !supabaseUser && !session) {
+  if (!hasAccess && !user) {
     redirect(`/login?redirect=/p/${slug}/view`)
   }
 
   if (!hasAccess) {
+    // Telegram-only user has no supabaseUid → can't activate key, prompt to link email
+    const canActivate = !!user?.supabaseUid
+
     return (
       <>
         <Header />
@@ -56,7 +54,22 @@ export default async function ProductViewPage({
                 ← {product.title}
               </Link>
             </div>
-            <LicenseKeyForm slug={slug} />
+            {canActivate ? (
+              <LicenseKeyForm slug={slug} />
+            ) : (
+              <div className="rounded-xl border border-border bg-card p-6 text-center space-y-3">
+                <p className="font-medium">Активация через ключ</p>
+                <p className="text-sm text-muted-foreground">
+                  Для активации лицензионного ключа нужен аккаунт по email.
+                  После входа аккаунты объединятся автоматически.
+                </p>
+                <Button asChild variant="outline" size="sm">
+                  <Link href={`/login?redirect=/p/${slug}/view`}>
+                    Войти через Email / Google →
+                  </Link>
+                </Button>
+              </div>
+            )}
             <div className="mt-6 text-center">
               <Button asChild variant="outline" size="sm">
                 <a href={product.lemon_squeezy_url} target="_blank" rel="noopener noreferrer">
