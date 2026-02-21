@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 
 type Step = 'idle' | 'loading' | 'waiting' | 'error'
@@ -12,6 +12,8 @@ export function TelegramBotLogin() {
   const [token, setToken] = useState<string | null>(null)
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get('redirect')
 
   const start = async () => {
     setStep('loading')
@@ -33,7 +35,15 @@ export function TelegramBotLogin() {
 
       if (data.status === 'ok') {
         clearInterval(pollRef.current!)
-        router.push(data.role === 'member' || data.role === 'admin' ? '/courses' : '/join')
+        if (redirectTo) {
+          router.push(redirectTo)
+        } else if (data.role === 'admin') {
+          router.push('/admin')
+        } else if (data.role === 'member') {
+          router.push('/courses')
+        } else {
+          router.push('/join')
+        }
       } else if (data.status === 'expired' || data.status === 'invalid') {
         clearInterval(pollRef.current!)
         setStep('error')

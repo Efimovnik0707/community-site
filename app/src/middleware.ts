@@ -26,7 +26,9 @@ export function middleware(request: NextRequest) {
 
   const requiresAuth = AUTH_REQUIRED.some(r => pathname.startsWith(r))
   if (requiresAuth && !isAuthenticated) {
-    return NextResponse.redirect(new URL('/login', request.url))
+    const loginUrl = new URL('/login', request.url)
+    loginUrl.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(loginUrl)
   }
 
   return NextResponse.next()
