@@ -57,8 +57,8 @@ export default function PrivacyPage() {
                 <div>
                   <p className="font-medium text-sm mb-1">При покупке продукта:</p>
                   <ul className="list-disc list-inside text-muted-foreground space-y-1 text-sm">
-                    <li>Лицензионный ключ и ID транзакции (через Lemon Squeezy)</li>
-                    <li>Платёжные данные обрабатывает Lemon Squeezy — мы их не получаем</li>
+                    <li>ID транзакции Stripe и email для привязки покупки</li>
+                    <li>Платёжные данные обрабатывает Stripe. Мы не получаем номера карт</li>
                   </ul>
                 </div>
                 <div>
@@ -97,7 +97,7 @@ export default function PrivacyPage() {
               <div className="space-y-2 text-sm text-muted-foreground">
                 <p><strong className="text-foreground">Supabase</strong> — база данных и аутентификация (США, соглашение SCCs с ЕС)</p>
                 <p><strong className="text-foreground">Vercel</strong> — хостинг (США, соглашение SCCs с ЕС)</p>
-                <p><strong className="text-foreground">Lemon Squeezy / Stripe</strong> — приём платежей (Merchant of Record, обрабатывает платёжные данные)</p>
+                <p><strong className="text-foreground">Stripe</strong> — приём платежей (обрабатывает платёжные данные, PCI DSS Level 1)</p>
                 <p><strong className="text-foreground">Telegram</strong> — авторизация через бота (данные по политике Telegram)</p>
                 <p className="pt-1">Мы не продаём и не передаём ваши данные третьим лицам в маркетинговых целях.</p>
               </div>

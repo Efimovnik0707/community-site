@@ -331,9 +331,15 @@ export default async function HomePage() {
       <footer className="border-t border-border py-8">
         <div className="mx-auto max-w-5xl px-4 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
           <span>© 2026 Никита Ефимов</span>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+            <Link href="/terms" className="hover:text-foreground transition-colors">
+              Условия
+            </Link>
             <Link href="/privacy" className="hover:text-foreground transition-colors">
               Конфиденциальность
+            </Link>
+            <Link href="/refund" className="hover:text-foreground transition-colors">
+              Возврат
             </Link>
             <a
               href="https://t.me/yefimov_comm_bot"

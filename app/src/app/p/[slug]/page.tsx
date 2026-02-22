@@ -101,12 +101,14 @@ export default async function ProductPage({
                 </p>
 
                 <p className="text-xs text-muted-foreground pt-1">
-                  Оплата через Lemon Squeezy · Карта, PayPal, Apple Pay
+                  Оплата через Stripe · Карта, Apple Pay, Google Pay
                   {product.membership_included && (
                     <> · Входит в{' '}
                       <Link href="/join" className="underline underline-offset-4 hover:text-foreground">членство</Link>
                     </>
                   )}
+                  {' · '}
+                  <Link href="/refund" className="underline underline-offset-4 hover:text-foreground">Возврат</Link>
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Уже купил?{' '}
