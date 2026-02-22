@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -126,6 +127,45 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+}
+
+/* ─── Prose (rich-text) стили для dark-only сайта ─── */
+.prose {
+  --tw-prose-body: oklch(0.88 0.01 265);
+  --tw-prose-headings: oklch(0.98 0 0);
+  --tw-prose-links: oklch(0.73 0.13 186);
+  --tw-prose-bold: oklch(0.98 0 0);
+  --tw-prose-bullets: oklch(0.5 0.02 265);
+  --tw-prose-counters: oklch(0.5 0.02 265);
+  --tw-prose-quotes: oklch(0.75 0.02 265);
+  --tw-prose-quote-borders: oklch(0.73 0.13 186 / 40%);
+  --tw-prose-code: oklch(0.9 0.06 186);
+  --tw-prose-pre-bg: oklch(0.1 0.015 265);
+  --tw-prose-pre-code: oklch(0.88 0.01 265);
+  --tw-prose-hr: oklch(1 0 0 / 10%);
+  --tw-prose-th-borders: oklch(1 0 0 / 15%);
+  --tw-prose-td-borders: oklch(1 0 0 / 8%);
+}
+
+.prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 150ms;
+}
+
+.prose :where(a):not(:where([class~="not-prose"], [class~="not-prose"] *)):hover {
+  color: oklch(0.8 0.13 186);
+}
+
+.prose :where(code):not(:where(pre *, [class~="not-prose"], [class~="not-prose"] *)) {
+  background: oklch(1 0 0 / 8%);
+  padding: 0.15em 0.35em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.prose :where(img):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  border-radius: 0.75rem;
 }
 
 /* ─── Утилиты проекта ─── */
