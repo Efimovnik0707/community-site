@@ -14,6 +14,7 @@ interface Product {
   price_display: string
   lemon_squeezy_url: string
   lemon_squeezy_product_id: string | null
+  old_price_display: string | null
   stripe_payment_link: string
   stripe_price_id: string | null
   content_html: string | null
@@ -32,6 +33,7 @@ export function ProductForm({ product }: { product?: Product }) {
   const [tagline, setTagline] = useState(product?.tagline ?? '')
   const [descriptionHtml, setDescriptionHtml] = useState(product?.description_html ?? '')
   const [priceDisplay, setPriceDisplay] = useState(product?.price_display ?? '$5')
+  const [oldPriceDisplay, setOldPriceDisplay] = useState(product?.old_price_display ?? '')
   const [stripePaymentLink, setStripePaymentLink] = useState(product?.stripe_payment_link ?? '')
   const [stripePriceId, setStripePriceId] = useState(product?.stripe_price_id ?? '')
   const [contentHtml, setContentHtml] = useState(product?.content_html ?? '')
@@ -53,6 +55,7 @@ export function ProductForm({ product }: { product?: Product }) {
       tagline: tagline.trim() || null,
       description_html: descriptionHtml || null,
       price_display: priceDisplay.trim(),
+      old_price_display: oldPriceDisplay.trim() || null,
       stripe_payment_link: stripePaymentLink.trim(),
       stripe_price_id: stripePriceId.trim() || null,
       lemon_squeezy_url: stripePaymentLink.trim(),
@@ -122,11 +125,17 @@ export function ProductForm({ product }: { product?: Product }) {
             className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1.5">Цена (для отображения)</label>
             <input value={priceDisplay} onChange={e => setPriceDisplay(e.target.value)} placeholder="$7"
               className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Старая цена (зачёркнутая)</label>
+            <input value={oldPriceDisplay} onChange={e => setOldPriceDisplay(e.target.value)} placeholder="$15"
+              className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
+            <p className="mt-1 text-xs text-muted-foreground">Оставь пустым если не нужна</p>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5">Порядок</label>

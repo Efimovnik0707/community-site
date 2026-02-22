@@ -11,13 +11,14 @@ interface ProductCard {
   title: string
   tagline: string | null
   price_display: string
+  old_price_display: string | null
 }
 
 export default async function HomePage() {
   const supabase = createServiceClient()
   const { data: products } = await supabase
     .from('comm_products')
-    .select('id, slug, title, tagline, price_display')
+    .select('id, slug, title, tagline, price_display, old_price_display')
     .eq('published', true)
     .order('sort_order')
 
@@ -232,7 +233,12 @@ export default async function HomePage() {
                   >
                     <div className="flex items-start justify-between gap-2 mb-3">
                       <h3 className="font-semibold text-sm leading-snug">{p.title}</h3>
-                      <span className="text-accent-brand font-bold text-sm shrink-0">{p.price_display}</span>
+                      <span className="shrink-0 flex items-center gap-1.5">
+                        {p.old_price_display && (
+                          <span className="text-muted-foreground/40 line-through text-xs">{p.old_price_display}</span>
+                        )}
+                        <span className="text-accent-brand font-bold text-sm">{p.price_display}</span>
+                      </span>
                     </div>
                     {p.tagline && (
                       <p className="text-xs text-muted-foreground leading-relaxed">{p.tagline}</p>

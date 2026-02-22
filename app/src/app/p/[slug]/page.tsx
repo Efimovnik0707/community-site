@@ -34,7 +34,7 @@ export default async function ProductPage({
   const supabase = createServiceClient()
   const baseQuery = supabase
     .from('comm_products')
-    .select('id, slug, title, tagline, description_html, price_display, lemon_squeezy_url, stripe_payment_link, membership_included, published')
+    .select('id, slug, title, tagline, description_html, price_display, old_price_display, lemon_squeezy_url, stripe_payment_link, membership_included, published')
     .eq('slug', slug)
 
   const { data: product } = await (isPreview && isAdmin
@@ -86,6 +86,9 @@ export default async function ProductPage({
             ) : (
               <>
                 <div className="flex items-center justify-center gap-3">
+                  {product.old_price_display && (
+                    <span className="text-2xl text-muted-foreground/50 line-through font-medium">{product.old_price_display}</span>
+                  )}
                   <span className="text-4xl font-bold">{product.price_display}</span>
                   <span className="text-muted-foreground text-sm">разовая оплата</span>
                 </div>
