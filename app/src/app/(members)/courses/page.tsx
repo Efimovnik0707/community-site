@@ -53,7 +53,7 @@ export default async function CoursesPage() {
 
           {/* Available courses */}
           {allCourses.filter(c => c.status !== 'coming_soon').length > 0 && (
-            <div className="space-y-4 mb-8">
+            <div className="space-y-5 mb-8">
               {allCourses
                 .filter(c => c.status !== 'coming_soon')
                 .map((course, i) => (
