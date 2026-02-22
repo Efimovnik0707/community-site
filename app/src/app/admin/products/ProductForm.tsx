@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { RichEditor } from '@/components/admin/RichEditor'
+import { FileUploader, type AttachedFile } from '@/components/admin/FileUploader'
 
 interface Product {
   id: string
@@ -18,6 +19,7 @@ interface Product {
   stripe_payment_link: string
   stripe_price_id: string | null
   content_html: string | null
+  attachments: AttachedFile[]
   membership_included: boolean
   published: boolean
   sort_order: number
@@ -37,6 +39,7 @@ export function ProductForm({ product }: { product?: Product }) {
   const [stripePaymentLink, setStripePaymentLink] = useState(product?.stripe_payment_link ?? '')
   const [stripePriceId, setStripePriceId] = useState(product?.stripe_price_id ?? '')
   const [contentHtml, setContentHtml] = useState(product?.content_html ?? '')
+  const [attachments, setAttachments] = useState<AttachedFile[]>(product?.attachments ?? [])
   const [membershipIncluded, setMembershipIncluded] = useState(product?.membership_included ?? false)
   const [published, setPublished] = useState(product?.published ?? false)
   const [sortOrder, setSortOrder] = useState(product?.sort_order ?? 0)
@@ -59,6 +62,7 @@ export function ProductForm({ product }: { product?: Product }) {
       stripe_price_id: stripePriceId.trim() || null,
       lemon_squeezy_url: stripePaymentLink.trim(),
       content_html: contentHtml || null,
+      attachments,
       membership_included: membershipIncluded,
       published,
       sort_order: sortOrder,
@@ -166,6 +170,12 @@ export function ProductForm({ product }: { product?: Product }) {
           <label className="block text-sm font-medium mb-2">Контент продукта (после покупки)</label>
           <p className="text-xs text-muted-foreground mb-2">Показывается на /p/[slug]/view после верификации оплаты</p>
           <RichEditor content={contentHtml} onChange={setContentHtml} />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Файлы продукта (скачиваемые)</label>
+          <p className="text-xs text-muted-foreground mb-2">PDF, JSON, ZIP и т.д. Показываются на странице после покупки</p>
+          <FileUploader files={attachments} onChange={setAttachments} />
         </div>
 
         <div className="flex gap-6 pt-2">
