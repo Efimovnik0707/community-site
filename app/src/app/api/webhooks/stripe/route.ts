@@ -93,6 +93,23 @@ export async function POST(req: NextRequest) {
       email: customerEmail,
       matched: !!supabaseUid,
     })
+
+    // Notify owner via Telegram
+    const botToken = process.env.TELEGRAM_BOT_TOKEN
+    const ownerChatId = process.env.TELEGRAM_OWNER_ID
+    if (botToken && ownerChatId) {
+      const amount = session.amount_total
+        ? `${(session.amount_total / 100).toFixed(2)} ${(session.currency ?? 'usd').toUpperCase()}`
+        : '?'
+      fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: ownerChatId,
+          text: `💰 Покупка продукта\n\nПродукт: ${product.slug}\nEmail: ${customerEmail ?? 'нет'}\nСумма: ${amount}`,
+        }),
+      }).catch(() => {})
+    }
   }
 
   return NextResponse.json({ ok: true })
