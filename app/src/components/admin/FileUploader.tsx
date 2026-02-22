@@ -30,17 +30,33 @@ export function FileUploader({ files, onChange }: FileUploaderProps) {
     setError(null)
     const results: AttachedFile[] = []
     for (const file of Array.from(fileList)) {
-      const fd = new FormData()
-      fd.append('file', file)
       try {
-        const res = await fetch('/api/admin/upload', { method: 'POST', body: fd })
-        if (res.ok) {
-          const data = await res.json()
-          results.push(data)
-        } else {
+        // 1. Get signed upload URL from our API (small JSON request, no file body)
+        const res = await fetch('/api/admin/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fileName: file.name, contentType: file.type }),
+        })
+        if (!res.ok) {
           const data = await res.json().catch(() => ({ error: `HTTP ${res.status}` }))
           setError(`Ошибка загрузки ${file.name}: ${data.error}`)
+          continue
         }
+        const { signedUrl, token, path, publicUrl } = await res.json()
+
+        // 2. Upload file directly to Supabase Storage (bypasses Vercel 4.5MB limit)
+        const uploadRes = await fetch(signedUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type || 'application/octet-stream' },
+          body: file,
+        })
+        if (!uploadRes.ok) {
+          const text = await uploadRes.text().catch(() => `HTTP ${uploadRes.status}`)
+          setError(`Ошибка загрузки ${file.name}: ${text}`)
+          continue
+        }
+
+        results.push({ url: publicUrl, name: file.name, size: file.size })
       } catch (e) {
         setError(`Ошибка сети при загрузке ${file.name}`)
       }
