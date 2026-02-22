@@ -14,7 +14,7 @@ export default async function ProductsPage() {
   const supabase = createServiceClient()
   const { data: products } = await supabase
     .from('comm_products')
-    .select('id, slug, title, tagline, price_display, old_price_display, membership_included')
+    .select('id, slug, title, tagline, price_display, old_price_display, stripe_payment_link, lemon_squeezy_url, membership_included')
     .eq('published', true)
     .order('sort_order', { ascending: true })
 
@@ -40,7 +40,7 @@ export default async function ProductsPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              {products.map((product: { id: string; slug: string; title: string; tagline: string | null; price_display: string; old_price_display: string | null; membership_included: boolean }) => {
+              {products.map((product: { id: string; slug: string; title: string; tagline: string | null; price_display: string; old_price_display: string | null; stripe_payment_link: string | null; lemon_squeezy_url: string | null; membership_included: boolean }) => {
                 const memberHasFree = isMember && product.membership_included
                 return (
                   <Link
@@ -66,7 +66,9 @@ export default async function ProductsPage() {
                           {product.old_price_display && (
                             <span className="text-sm text-muted-foreground/40 line-through">{product.old_price_display}</span>
                           )}
-                          <span className="text-lg font-bold">{product.price_display}</span>
+                          <span className="text-lg font-bold">
+                            {!product.stripe_payment_link && !product.lemon_squeezy_url ? 'Бесплатно' : product.price_display}
+                          </span>
                         </span>
                       )}
                     </div>

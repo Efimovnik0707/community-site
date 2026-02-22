@@ -12,13 +12,15 @@ interface ProductCard {
   tagline: string | null
   price_display: string
   old_price_display: string | null
+  stripe_payment_link: string | null
+  lemon_squeezy_url: string | null
 }
 
 export default async function HomePage() {
   const supabase = createServiceClient()
   const { data: products } = await supabase
     .from('comm_products')
-    .select('id, slug, title, tagline, price_display, old_price_display')
+    .select('id, slug, title, tagline, price_display, old_price_display, stripe_payment_link, lemon_squeezy_url')
     .eq('published', true)
     .order('sort_order')
 
@@ -237,7 +239,9 @@ export default async function HomePage() {
                         {p.old_price_display && (
                           <span className="text-muted-foreground/40 line-through text-xs">{p.old_price_display}</span>
                         )}
-                        <span className="text-accent-brand font-bold text-sm">{p.price_display}</span>
+                        <span className="text-accent-brand font-bold text-sm">
+                          {!p.stripe_payment_link && !p.lemon_squeezy_url ? 'Бесплатно' : p.price_display}
+                        </span>
                       </span>
                     </div>
                     {p.tagline && (

@@ -44,6 +44,8 @@ export default async function ProductPage({
   if (!product) notFound()
 
   const hasAccess = isMember && product.membership_included
+  const isFree = !product.stripe_payment_link && !product.lemon_squeezy_url
+  const isPaid = !isFree && !hasAccess
 
   return (
     <>
@@ -59,7 +61,9 @@ export default async function ProductPage({
         <div className="mx-auto max-w-2xl px-4">
           {/* Header */}
           <div className="text-center mb-12">
-            <Badge variant="secondary" className="mb-4 text-xs">Продукт</Badge>
+            <Badge variant="secondary" className="mb-4 text-xs">
+              {isFree ? 'Бесплатно' : 'Продукт'}
+            </Badge>
             <h1 className="text-3xl font-bold md:text-4xl mb-4 leading-tight">{product.title}</h1>
             {product.tagline && (
               <p className="text-lg text-muted-foreground">{product.tagline}</p>
@@ -83,6 +87,18 @@ export default async function ProductPage({
                   <Link href={`/p/${slug}/view${isPreview ? '?preview=1' : ''}`}>Открыть продукт</Link>
                 </Button>
               </>
+            ) : isFree ? (
+              <>
+                {product.old_price_display && (
+                  <div className="flex items-center justify-center gap-3">
+                    <span className="text-2xl text-muted-foreground/50 line-through font-medium">{product.old_price_display}</span>
+                    <span className="text-4xl font-bold text-primary">Бесплатно</span>
+                  </div>
+                )}
+                <Button asChild size="lg" className="text-base font-semibold px-10 h-12">
+                  <Link href={`/p/${slug}/view${isPreview ? '?preview=1' : ''}`}>Получить бесплатно</Link>
+                </Button>
+              </>
             ) : (
               <>
                 <div className="flex items-center justify-center gap-3">
@@ -98,7 +114,6 @@ export default async function ProductPage({
                   </a>
                 </Button>
 
-                {/* Why so cheap explanation */}
                 <p className="text-xs text-muted-foreground max-w-sm mx-auto pt-1">
                   Хочу, чтобы ты попробовал и сам убедился.
                 </p>

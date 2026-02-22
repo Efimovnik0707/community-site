@@ -47,7 +47,6 @@ export function ProductForm({ product }: { product?: Product }) {
 
   async function handleSave() {
     if (!title.trim() || !slug.trim()) { setError('Укажите название и slug'); return }
-    if (!stripePaymentLink.trim()) { setError('Укажите Stripe Payment Link'); return }
     setSaving(true)
     const payload = {
       title: title.trim(),

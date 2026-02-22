@@ -68,10 +68,11 @@ export default async function ProductViewPage({
 
   const isMember = user?.role === 'member' || user?.role === 'admin'
   const memberAccess = isMember && product.membership_included
-  const purchaseAccess = user?.supabaseUid
+  const isFree = !product.stripe_payment_link && !product.lemon_squeezy_url
+  const purchaseAccess = !isFree && user?.supabaseUid
     ? await hasPurchased(user.supabaseUid, product.id, user.email)
     : false
-  const hasAccess = memberAccess || purchaseAccess
+  const hasAccess = isFree || memberAccess || purchaseAccess
 
   // Not logged in at all — redirect to login with return URL
   if (!hasAccess && !user) {
