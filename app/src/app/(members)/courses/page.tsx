@@ -157,7 +157,7 @@ function CourseRow({
   )
 
   if (canOpen) {
-    return <Link href={`/courses/${slug}`}>{content}</Link>
+    return <Link href={`/courses/${slug}`} className="block">{content}</Link>
   }
   return content
 }
