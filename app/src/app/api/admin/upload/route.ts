@@ -12,16 +12,21 @@ export async function POST(req: NextRequest) {
   const file = formData.get('file') as File | null
   if (!file) return NextResponse.json({ error: 'No file' }, { status: 400 })
 
-  const ext = file.name.split('.').pop() ?? 'bin'
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
   const path = `${Date.now()}_${safeName}`
+
+  // Convert File to Buffer for Supabase Storage compatibility
+  const buffer = Buffer.from(await file.arrayBuffer())
 
   const supabase = createServiceClient()
   const { error } = await supabase.storage
     .from('comm-files')
-    .upload(path, file, { contentType: file.type, upsert: false })
+    .upload(path, buffer, { contentType: file.type, upsert: false })
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  if (error) {
+    console.error('Storage upload error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
 
   const { data: urlData } = supabase.storage.from('comm-files').getPublicUrl(path)
 

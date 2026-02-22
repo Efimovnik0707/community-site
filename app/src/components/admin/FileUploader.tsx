@@ -23,9 +23,11 @@ function formatSize(bytes: number) {
 export function FileUploader({ files, onChange }: FileUploaderProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   async function handleFiles(fileList: FileList) {
     setUploading(true)
+    setError(null)
     const results: AttachedFile[] = []
     for (const file of Array.from(fileList)) {
       const fd = new FormData()
@@ -35,13 +37,17 @@ export function FileUploader({ files, onChange }: FileUploaderProps) {
         if (res.ok) {
           const data = await res.json()
           results.push(data)
+        } else {
+          const data = await res.json().catch(() => ({ error: `HTTP ${res.status}` }))
+          setError(`Ошибка загрузки ${file.name}: ${data.error}`)
         }
-      } catch {
-        // skip failed files
+      } catch (e) {
+        setError(`Ошибка сети при загрузке ${file.name}`)
       }
     }
-    onChange([...files, ...results])
+    if (results.length > 0) onChange([...files, ...results])
     setUploading(false)
+    if (inputRef.current) inputRef.current.value = ''
   }
 
   function remove(url: string) {
@@ -70,6 +76,9 @@ export function FileUploader({ files, onChange }: FileUploaderProps) {
         className="hidden"
         onChange={e => e.target.files && handleFiles(e.target.files)}
       />
+      {error && (
+        <p className="text-xs text-destructive bg-destructive/10 px-3 py-1.5 rounded-md">{error}</p>
+      )}
       <Button
         type="button"
         variant="outline"
