@@ -51,7 +51,7 @@ export function LicenseKeyForm({ slug }: { slug: string }) {
       <div className="text-4xl mb-4">🔑</div>
       <h2 className="text-xl font-semibold mb-2">Введи лицензионный ключ</h2>
       <p className="text-sm text-muted-foreground mb-6">
-        Ключ был отправлен на твой email после оплаты в Lemon Squeezy.
+        Ключ был отправлен на твой email после оплаты.
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-sm mx-auto">
         <input
@@ -71,15 +71,7 @@ export function LicenseKeyForm({ slug }: { slug: string }) {
         </Button>
       </form>
       <p className="mt-4 text-xs text-muted-foreground">
-        Не получил письмо?{' '}
-        <a
-          href="https://app.lemonsqueezy.com/my-orders"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="underline underline-offset-4 hover:text-foreground"
-        >
-          Найти заказ в Lemon Squeezy
-        </a>
+        Оплатил через Stripe? Войди с тем же email, и доступ откроется автоматически.
       </p>
     </div>
   )

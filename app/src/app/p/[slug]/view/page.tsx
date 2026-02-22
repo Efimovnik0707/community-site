@@ -27,7 +27,7 @@ export default async function ProductViewPage({
   const supabase = createServiceClient()
   const baseQuery = supabase
     .from('comm_products')
-    .select('id, slug, title, content_html, lemon_squeezy_product_id, membership_included, lemon_squeezy_url')
+    .select('id, slug, title, content_html, lemon_squeezy_product_id, membership_included, lemon_squeezy_url, stripe_payment_link')
     .eq('slug', slug)
 
   const { data: product } = await (isPreview && isAdmin
@@ -69,7 +69,7 @@ export default async function ProductViewPage({
   const isMember = user?.role === 'member' || user?.role === 'admin'
   const memberAccess = isMember && product.membership_included
   const purchaseAccess = user?.supabaseUid
-    ? await hasPurchased(user.supabaseUid, product.id)
+    ? await hasPurchased(user.supabaseUid, product.id, user.email)
     : false
   const hasAccess = memberAccess || purchaseAccess
 
@@ -110,7 +110,7 @@ export default async function ProductViewPage({
             )}
             <div className="mt-6 text-center">
               <Button asChild variant="outline" size="sm">
-                <a href={product.lemon_squeezy_url} target="_blank" rel="noopener noreferrer">
+                <a href={product.stripe_payment_link || product.lemon_squeezy_url} target="_blank" rel="noopener noreferrer">
                   Купить продукт →
                 </a>
               </Button>

@@ -34,7 +34,7 @@ export default async function ProductPage({
   const supabase = createServiceClient()
   const baseQuery = supabase
     .from('comm_products')
-    .select('id, slug, title, tagline, description_html, price_display, lemon_squeezy_url, membership_included, published')
+    .select('id, slug, title, tagline, description_html, price_display, lemon_squeezy_url, stripe_payment_link, membership_included, published')
     .eq('slug', slug)
 
   const { data: product } = await (isPreview && isAdmin
@@ -90,7 +90,7 @@ export default async function ProductPage({
                   <span className="text-muted-foreground text-sm">разовая оплата</span>
                 </div>
                 <Button asChild size="lg" className="text-base font-semibold px-10 h-12">
-                  <a href={product.lemon_squeezy_url} target="_blank" rel="noopener noreferrer">
+                  <a href={product.stripe_payment_link || product.lemon_squeezy_url} target="_blank" rel="noopener noreferrer">
                     Купить сейчас
                   </a>
                 </Button>

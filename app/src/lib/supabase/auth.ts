@@ -92,15 +92,35 @@ export async function getSupabaseUser(): Promise<SupabaseUser | null> {
 }
 
 /** Check if supabase user has purchased a specific product. */
-export async function hasPurchased(supabaseUid: string, productId: string): Promise<boolean> {
+export async function hasPurchased(supabaseUid: string, productId: string, email?: string | null): Promise<boolean> {
   const supabase = createServiceClient()
+  // Check by user ID
   const { data } = await supabase
     .from('comm_purchases')
     .select('id')
     .eq('supabase_uid', supabaseUid)
     .eq('product_id', productId)
     .single()
-  return !!data
+  if (data) return true
+
+  // Also check by email (Stripe purchases before account creation)
+  if (email) {
+    const { data: emailPurchase } = await supabase
+      .from('comm_purchases')
+      .select('id')
+      .eq('customer_email', email)
+      .eq('product_id', productId)
+      .single()
+    if (emailPurchase) {
+      // Claim this purchase for the user
+      await supabase
+        .from('comm_purchases')
+        .update({ supabase_uid: supabaseUid })
+        .eq('id', emailPurchase.id)
+      return true
+    }
+  }
+  return false
 }
 
 /** Get all purchases for a supabase user. */

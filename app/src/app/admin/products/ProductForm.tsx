@@ -14,6 +14,8 @@ interface Product {
   price_display: string
   lemon_squeezy_url: string
   lemon_squeezy_product_id: string | null
+  stripe_payment_link: string
+  stripe_price_id: string | null
   content_html: string | null
   membership_included: boolean
   published: boolean
@@ -30,8 +32,8 @@ export function ProductForm({ product }: { product?: Product }) {
   const [tagline, setTagline] = useState(product?.tagline ?? '')
   const [descriptionHtml, setDescriptionHtml] = useState(product?.description_html ?? '')
   const [priceDisplay, setPriceDisplay] = useState(product?.price_display ?? '$5')
-  const [lsUrl, setLsUrl] = useState(product?.lemon_squeezy_url ?? '')
-  const [lsProductId, setLsProductId] = useState(product?.lemon_squeezy_product_id ?? '')
+  const [stripePaymentLink, setStripePaymentLink] = useState(product?.stripe_payment_link ?? '')
+  const [stripePriceId, setStripePriceId] = useState(product?.stripe_price_id ?? '')
   const [contentHtml, setContentHtml] = useState(product?.content_html ?? '')
   const [membershipIncluded, setMembershipIncluded] = useState(product?.membership_included ?? false)
   const [published, setPublished] = useState(product?.published ?? false)
@@ -43,7 +45,7 @@ export function ProductForm({ product }: { product?: Product }) {
 
   async function handleSave() {
     if (!title.trim() || !slug.trim()) { setError('Укажите название и slug'); return }
-    if (!lsUrl.trim()) { setError('Укажите ссылку Lemon Squeezy'); return }
+    if (!stripePaymentLink.trim()) { setError('Укажите Stripe Payment Link'); return }
     setSaving(true)
     const payload = {
       title: title.trim(),
@@ -51,8 +53,9 @@ export function ProductForm({ product }: { product?: Product }) {
       tagline: tagline.trim() || null,
       description_html: descriptionHtml || null,
       price_display: priceDisplay.trim(),
-      lemon_squeezy_url: lsUrl.trim(),
-      lemon_squeezy_product_id: lsProductId.trim() || null,
+      stripe_payment_link: stripePaymentLink.trim(),
+      stripe_price_id: stripePriceId.trim() || null,
+      lemon_squeezy_url: stripePaymentLink.trim(),
       content_html: contentHtml || null,
       membership_included: membershipIncluded,
       published,
@@ -122,7 +125,7 @@ export function ProductForm({ product }: { product?: Product }) {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium mb-1.5">Цена (для отображения)</label>
-            <input value={priceDisplay} onChange={e => setPriceDisplay(e.target.value)} placeholder="$5"
+            <input value={priceDisplay} onChange={e => setPriceDisplay(e.target.value)} placeholder="$7"
               className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring" />
           </div>
           <div>
@@ -133,16 +136,16 @@ export function ProductForm({ product }: { product?: Product }) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1.5">Lemon Squeezy — ссылка на checkout</label>
-          <input value={lsUrl} onChange={e => setLsUrl(e.target.value)} placeholder="https://your-store.lemonsqueezy.com/buy/..."
+          <label className="block text-sm font-medium mb-1.5">Stripe Payment Link</label>
+          <input value={stripePaymentLink} onChange={e => setStripePaymentLink(e.target.value)} placeholder="https://buy.stripe.com/..."
             className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring font-mono" />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1.5">Lemon Squeezy — Product ID (для верификации)</label>
-          <input value={lsProductId} onChange={e => setLsProductId(e.target.value)} placeholder="12345"
+          <label className="block text-sm font-medium mb-1.5">Stripe Price ID (для webhook)</label>
+          <input value={stripePriceId} onChange={e => setStripePriceId(e.target.value)} placeholder="price_..."
             className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring font-mono" />
-          <p className="mt-1 text-xs text-muted-foreground">Найди в LS: Store → Products → Product ID</p>
+          <p className="mt-1 text-xs text-muted-foreground">Stripe Dashboard → Product → Pricing → Price ID</p>
         </div>
 
         <div>
