@@ -116,13 +116,13 @@ export default async function ContentItemPage({ params }: Props) {
           {/* Content body */}
           {typedItem.content_body && (
             <div className="rounded-xl border border-border bg-card p-6">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Контент</span>
-                <CopyButton text={typedItem.content_body} />
+              <div className="flex items-center justify-end mb-4">
+                <CopyButton text={typedItem.content_body.replace(/<[^>]*>/g, '')} />
               </div>
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed font-mono text-foreground/90 overflow-x-auto">
-                {typedItem.content_body}
-              </pre>
+              <div
+                className="prose prose-sm max-w-none"
+                dangerouslySetInnerHTML={{ __html: typedItem.content_body }}
+              />
             </div>
           )}
 
