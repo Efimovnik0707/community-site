@@ -5,6 +5,7 @@ import { EmailLogin } from '@/components/auth/EmailLogin'
 
 export const metadata: Metadata = {
   title: 'Войти',
+  robots: { index: false, follow: false },
 }
 
 export default async function LoginPage({

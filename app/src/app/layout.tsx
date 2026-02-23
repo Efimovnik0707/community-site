@@ -13,11 +13,27 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://aipack.live"),
   title: {
     default: "Никита Ефимов | AI Комьюнити",
     template: "%s | AI Комьюнити",
   },
   description: "Инструменты, шаблоны и курсы по AI-автоматизации для тех, кто хочет применять AI в работе и бизнесе.",
+  openGraph: {
+    type: "website",
+    locale: "ru_RU",
+    siteName: "AI Комьюнити",
+    title: "Никита Ефимов | AI Комьюнити",
+    description: "Инструменты, шаблоны и курсы по AI-автоматизации для тех, кто хочет применять AI в работе и бизнесе.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Никита Ефимов | AI Комьюнити",
+    description: "Инструменты, шаблоны и курсы по AI-автоматизации для тех, кто хочет применять AI в работе и бизнесе.",
+  },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function RootLayout({

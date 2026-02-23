@@ -9,7 +9,10 @@ import { Button } from '@/components/ui/button'
 import { LogoutEmailButton } from '@/components/auth/LogoutEmailButton'
 import { LinkTelegramButton } from '@/components/auth/LinkTelegramButton'
 
-export const metadata: Metadata = { title: 'Мои продукты' }
+export const metadata: Metadata = {
+  title: 'Мои продукты',
+  robots: { index: false, follow: false },
+}
 
 export default async function MyPage() {
   const supabase = await createClient()
