@@ -1,0 +1,279 @@
+{
+  "name": "AI-классификатор заявок",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "incoming-lead",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "wh01hook2",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [0, 0],
+      "webhookId": "incoming-lead"
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "response",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "responses": {
+          "values": [
+            {
+              "type": "text",
+              "role": "system",
+              "content": "Ты классифицируешь входящие заявки. Прочитай сообщение и определи категорию.\n\nКатегории:\n- sales (хотят купить, узнать цену, заказать услугу)\n- support (проблема, баг, жалоба, вопрос по существующему заказу)\n- partnership (предложение сотрудничества, совместный проект, бартер)\n- spam (реклама, нерелевантное, массовая рассылка)\n\nОтветь ОДНИМ словом: sales, support, partnership или spam. Ничего больше."
+            },
+            {
+              "type": "text",
+              "role": "user",
+              "content": "=Имя: {{ $json.body.name }}\nEmail: {{ $json.body.email }}\nСообщение: {{ $json.body.message }}"
+            }
+          ]
+        },
+        "simplify": true,
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "cl4ss1fy",
+      "name": "Classify Lead",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [400, 0],
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_KEY",
+          "name": "OpenAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "rules",
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output_text.trim().toLowerCase() }}",
+                    "rightValue": "sales",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Sales"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output_text.trim().toLowerCase() }}",
+                    "rightValue": "support",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Support"
+            },
+            {
+              "conditions": {
+                "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "strict" },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.output_text.trim().toLowerCase() }}",
+                    "rightValue": "partnership",
+                    "operator": { "type": "string", "operation": "equals" }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Partnership"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "sw1tch01",
+      "name": "Route by Category",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [800, 0]
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_SALES_CHAT_ID",
+        "text": "=🔥 Новая заявка (продажи)\n\nИмя: {{ $('Webhook').item.json.body.name }}\nEmail: {{ $('Webhook').item.json.body.email }}\nСообщение: {{ $('Webhook').item.json.body.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "tg_sales1",
+      "name": "Notify Sales",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1200, -200],
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_BOT",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_SUPPORT_CHAT_ID",
+        "text": "=🛠 Новая заявка (поддержка)\n\nИмя: {{ $('Webhook').item.json.body.name }}\nEmail: {{ $('Webhook').item.json.body.email }}\nСообщение: {{ $('Webhook').item.json.body.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "tg_supp01",
+      "name": "Notify Support",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1200, 0],
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_BOT",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_PARTNER_CHAT_ID",
+        "text": "=🤝 Новая заявка (партнёрство)\n\nИмя: {{ $('Webhook').item.json.body.name }}\nEmail: {{ $('Webhook').item.json.body.email }}\nСообщение: {{ $('Webhook').item.json.body.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "tg_part01",
+      "name": "Notify Partnership",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1200, 200],
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_BOT",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_SPAM_CHAT_ID",
+        "text": "=🗑 Спам/нерелевантное\n\nИмя: {{ $('Webhook').item.json.body.name }}\nEmail: {{ $('Webhook').item.json.body.email }}\nСообщение: {{ $('Webhook').item.json.body.message }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "tg_spam01",
+      "name": "Notify Spam",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1200, 400],
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_BOT",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 📋 AI-классификатор заявок\n\n**Что делает:** принимает заявку через webhook (POST), GPT определяет категорию (продажи, поддержка, партнёрство, спам), отправляет уведомление в нужный Telegram-чат.\n\n**Настройка:**\n1. Подставь OpenAI API Key\n2. Подставь Telegram Bot Token\n3. Замени chat ID в каждой ноде Notify на ID нужного чата/группы\n4. Подключи webhook к своей форме или сервису\n\n**Формат POST-запроса:**\n```\n{ \"name\": \"Иван\",\n  \"email\": \"ivan@mail.ru\",\n  \"message\": \"Хочу узнать цену\" }\n```\n\n**Кастомизация:**\n- Добавь новые категории в system prompt и новые ветки в Switch\n- Подключи Google Sheets для логирования\n- Добавь авто-ответ на email через SMTP\n\n---\n\n📬 Больше готовых воркфлоу и AI-шаблонов:\nhttps://t.me/yefimov_ai",
+        "width": 380,
+        "height": 580
+      },
+      "id": "st1cky02",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1460, -100]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Classify Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Lead": {
+      "main": [
+        [
+          {
+            "node": "Route by Category",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Category": {
+      "main": [
+        [
+          {
+            "node": "Notify Sales",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Support",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Partnership",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify Spam",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [],
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": ""
+  }
+}

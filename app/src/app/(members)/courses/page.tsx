@@ -33,20 +33,20 @@ export default async function CoursesPage() {
           <div className="mb-10">
             <h1 className="text-3xl font-bold mb-2">Курсы</h1>
             <p className="text-muted-foreground">
-              Структурированные программы — от основ до продвинутой автоматизации
+              N8N, ChatGPT, Claude Code. С нуля до рабочих результатов
             </p>
           </div>
 
           {!isMember && (
             <div className="rounded-xl border border-primary/20 bg-primary/5 p-5 mb-10 flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <div className="flex-1">
-                <p className="font-medium text-sm">Доступ к курсам — для участников комьюнити</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Оформи членство, чтобы начать обучение
+                <p className="font-medium text-sm">Часть курсов доступна бесплатно</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Для полного доступа оформи членство в комьюнити
                 </p>
               </div>
               <Button asChild size="sm" className="shrink-0">
-                <Link href="/join">Вступить — $50/мес</Link>
+                <Link href="/join">Вступить в комьюнити</Link>
               </Button>
             </div>
           )}
@@ -64,7 +64,8 @@ export default async function CoursesPage() {
                     description={course.description}
                     slug={course.slug}
                     comingSoon={false}
-                    accessible={isMember}
+                    isPremium={course.is_premium}
+                    isMember={isMember}
                   />
                 ))}
             </div>
@@ -91,7 +92,8 @@ export default async function CoursesPage() {
                       description={course.description}
                       slug={course.slug}
                       comingSoon={true}
-                      accessible={isMember}
+                      isPremium={course.is_premium}
+                      isMember={isMember}
                     />
                   ))}
               </div>
@@ -109,15 +111,19 @@ function CourseRow({
   description,
   slug,
   comingSoon,
-  accessible,
+  isPremium,
+  isMember,
 }: {
   num: number
   title: string
   description: string | null
   slug?: string
   comingSoon: boolean
-  accessible: boolean
+  isPremium: boolean
+  isMember: boolean
 }) {
+  // Free courses are accessible to everyone; premium only to members
+  const accessible = !isPremium || isMember
   const canOpen = !comingSoon && accessible && !!slug
 
   const content = (
@@ -134,12 +140,15 @@ function CourseRow({
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <h2 className={`font-semibold text-sm ${canOpen ? 'group-hover:text-primary transition-colors' : ''}`}>{title}</h2>
-          {!comingSoon && !accessible && (
+          {!comingSoon && !isPremium && (
+            <Badge variant="secondary" className="text-[10px] px-1.5 bg-primary/10 text-primary border-primary/20">Бесплатно</Badge>
+          )}
+          {!comingSoon && isPremium && !isMember && (
             <Badge variant="secondary" className="text-[10px] px-1.5">Участникам</Badge>
           )}
         </div>
         {description && (
-          <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{description}</p>
+          <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">{description}</p>
         )}
       </div>
       {canOpen && (
@@ -147,7 +156,7 @@ function CourseRow({
           <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       )}
-      {!comingSoon && !accessible && (
+      {!comingSoon && isPremium && !isMember && (
         <svg className="text-muted-foreground/30 shrink-0" width="14" height="14" viewBox="0 0 14 14" fill="none">
           <rect x="2" y="6" width="10" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.2"/>
           <path d="M4.5 6V4.5a2.5 2.5 0 015 0V6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>

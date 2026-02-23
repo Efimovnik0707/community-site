@@ -30,10 +30,8 @@ export default async function CoursePage({ params }: Props) {
   const { slug } = await params
   const user = await getUnifiedUser()
 
-  // Require membership
   if (!user) redirect('/login')
   const isMember = user.role === 'member' || user.role === 'admin'
-  if (!isMember) redirect('/join')
 
   const supabase = createServiceClient()
 
@@ -46,6 +44,9 @@ export default async function CoursePage({ params }: Props) {
     .single()
 
   if (!course) notFound()
+
+  // Premium courses require membership; free courses are open to all logged-in users
+  if ((course as Course).is_premium && !isMember) redirect('/join')
 
   // Fetch modules + lessons
   const { data: modules } = await supabase

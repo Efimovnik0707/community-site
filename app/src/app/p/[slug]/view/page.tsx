@@ -7,6 +7,7 @@ import { Header } from '@/components/layout/Header'
 import { Button } from '@/components/ui/button'
 import { LicenseKeyForm } from '@/components/products/LicenseKeyForm'
 import { AdminEditBar } from '@/components/admin/AdminEditBar'
+import { CodeCopyButton } from '@/components/content/CodeCopyButton'
 
 export const metadata: Metadata = { title: 'Ваш продукт' }
 
@@ -90,7 +91,7 @@ export default async function ProductViewPage({
       <>
         <Header />
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-yellow-500/90 text-black text-xs font-semibold px-4 py-2 rounded-full shadow-lg">
-          Режим превью — контент продукта
+          Режим превью: контент продукта
         </div>
         <main className="pt-24 pb-20">
           <div className="mx-auto max-w-2xl px-4">
@@ -101,10 +102,14 @@ export default async function ProductViewPage({
             </div>
             <h1 className="text-2xl font-bold mb-8">{product.title}</h1>
             {product.content_html ? (
-              <div
-                className="prose prose-invert prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: product.content_html }}
-              />
+              <>
+                <div
+                  id="product-content-preview"
+                  className="prose prose-invert prose-base max-w-none"
+                  dangerouslySetInnerHTML={{ __html: product.content_html }}
+                />
+                <CodeCopyButton containerId="product-content-preview" />
+              </>
             ) : (
               <p className="text-muted-foreground">Контент продукта скоро появится.</p>
             )}
@@ -185,10 +190,14 @@ export default async function ProductViewPage({
           <h1 className="text-2xl font-bold mb-8">{product.title}</h1>
 
           {product.content_html ? (
-            <div
-              className="prose prose-invert prose-sm max-w-none"
-              dangerouslySetInnerHTML={{ __html: product.content_html }}
-            />
+            <>
+              <div
+                id="product-content"
+                className="prose prose-invert prose-base max-w-none"
+                dangerouslySetInnerHTML={{ __html: product.content_html }}
+              />
+              <CodeCopyButton containerId="product-content" />
+            </>
           ) : (
             <p className="text-muted-foreground">Контент продукта скоро появится.</p>
           )}
@@ -199,10 +208,10 @@ export default async function ProductViewPage({
           <div className="mt-16 rounded-xl border border-primary/20 bg-primary/5 p-6 text-center">
             <p className="font-medium mb-1">Хочешь ещё больше?</p>
             <p className="text-sm text-muted-foreground mb-4">
-              В комьюнити — курсы, живые эфиры, сообщество практиков и новый контент каждую неделю.
+              В комьюнити: курсы, живые эфиры, сообщество практиков и новый контент каждую неделю.
             </p>
             <Button asChild size="sm" variant="outline">
-              <Link href="/join">Вступить — $50/мес</Link>
+              <Link href="/join">Вступить в комьюнити</Link>
             </Button>
           </div>
         </div>

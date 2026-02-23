@@ -1,0 +1,159 @@
+{
+  "name": "Telegram AI-ассистент",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "t1r2g3e4",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_BOT",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "Ты — полезный AI-ассистент в Telegram. Отвечай кратко, по делу, на языке пользователя. Если вопрос требует развёрнутого ответа, структурируй текст. Не используй markdown-разметку (звёздочки, решётки), потому что Telegram её не отобразит корректно."
+        }
+      },
+      "id": "a1g2n3t4",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "o1p2n3a4",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [200, 200],
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_OPENAI_KEY",
+          "name": "OpenAI"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "id": "m1e2m3r4",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [400, 200]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "id": "s1n2d3t4",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [800, 0],
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_TELEGRAM_BOT",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 🤖 Telegram AI-ассистент\n\n**Что делает:** принимает сообщение в Telegram, отправляет в GPT, возвращает ответ. Помнит контекст последних 10 сообщений.\n\n**Настройка за 3 шага:**\n1. Подставь свой Telegram Bot Token (получить у @BotFather)\n2. Подставь OpenAI API Key\n3. Активируй воркфлоу\n\n**Хочешь адаптировать под себя?**\n- Поменяй system prompt в ноде AI Agent\n- Поменяй модель (gpt-4o для сложных задач, gpt-4o-mini для экономии)\n- Добавь tools, чтобы агент мог искать в Google, читать файлы и т.д.\n\n---\n\n📬 Больше готовых воркфлоу и AI-шаблонов:\nhttps://t.me/yefimov_ai",
+        "width": 360,
+        "height": 510
+      },
+      "id": "n0t3st1k",
+      "name": "Sticky Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [1060, -80]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [],
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": ""
+  }
+}

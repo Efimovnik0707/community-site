@@ -20,7 +20,7 @@ export default function ToolsPage() {
           <div className="mb-10">
             <h1 className="text-3xl font-bold mb-2">Инструменты</h1>
             <p className="text-muted-foreground">
-              Шаблоны, промпты, скиллы и воркфлоу — готовые к использованию
+              Шаблоны, промпты, скиллы и воркфлоу. Готовые к использованию
             </p>
           </div>
 
@@ -36,7 +36,7 @@ export default function ToolsPage() {
                     <h2 className="font-semibold text-sm">{meta.label}</h2>
                     <Badge variant="secondary" className="text-xs">Скоро</Badge>
                   </div>
-                  <p className="text-xs text-muted-foreground">{meta.description}</p>
+                  <p className="text-sm text-muted-foreground">{meta.description}</p>
                 </div>
               ) : (
                 <Link
@@ -48,7 +48,7 @@ export default function ToolsPage() {
                   <h2 className="font-semibold text-sm mb-2 group-hover:text-primary transition-colors">
                     {meta.label}
                   </h2>
-                  <p className="text-xs text-muted-foreground">{meta.description}</p>
+                  <p className="text-sm text-muted-foreground">{meta.description}</p>
                 </Link>
               )
             ))}

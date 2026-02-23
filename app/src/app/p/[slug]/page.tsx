@@ -54,7 +54,7 @@ export default async function ProductPage({
         {/* Preview banner */}
         {isPreview && isAdmin && !product.published && (
           <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-40 bg-yellow-500/90 text-black text-xs font-semibold px-4 py-2 rounded-full shadow-lg">
-            Режим превью — продукт не опубликован
+            Режим превью: продукт не опубликован
           </div>
         )}
 
@@ -73,7 +73,7 @@ export default async function ProductPage({
           {/* Description */}
           {product.description_html && (
             <div
-              className="prose prose-invert prose-sm max-w-none mb-10 rounded-2xl border border-border bg-card p-8"
+              className="prose prose-invert prose-base max-w-none mb-10 rounded-2xl border border-border bg-card p-8"
               dangerouslySetInnerHTML={{ __html: product.description_html }}
             />
           )}

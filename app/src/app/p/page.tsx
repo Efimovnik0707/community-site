@@ -29,7 +29,7 @@ export default async function ProductsPage() {
           <div className="mb-10">
             <h1 className="text-3xl font-bold mb-2">Продукты</h1>
             <p className="text-muted-foreground">
-              Цифровые инструменты по AI и автоматизации — разовая покупка, навсегда твой
+              Цифровые инструменты по AI и автоматизации. Разовая покупка, навсегда твой
             </p>
           </div>
 
@@ -88,7 +88,7 @@ export default async function ProductsPage() {
                 Членство открывает доступ к курсам, эфирам и части продуктов без доплаты
               </p>
               <Button asChild size="sm" variant="outline">
-                <Link href="/join">Вступить — $50/мес</Link>
+                <Link href="/join">Вступить в комьюнити</Link>
               </Button>
             </div>
           )}

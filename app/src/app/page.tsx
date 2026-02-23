@@ -109,7 +109,7 @@ export default async function HomePage() {
               <div>
                 <p className="text-sm font-medium text-accent-brand mb-3">Кто я такой и почему тебе стоит слушать</p>
                 <p className="text-lg font-semibold mb-4">Никита Ефимов</p>
-                <div className="text-muted-foreground text-sm leading-relaxed space-y-3">
+                <div className="text-muted-foreground text-base leading-relaxed space-y-3">
                   <p>
                     Год назад я не думал, что буду зарабатывать на AI. Занимался маркетингом и продажами 10 лет.
                     Потом переехал в Испанию и начал строить всё заново.
@@ -183,7 +183,7 @@ export default async function HomePage() {
                   <span className="text-2xl shrink-0">{item.icon}</span>
                   <div>
                     <p className="font-semibold text-sm mb-1">{item.title}</p>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -298,10 +298,10 @@ export default async function HomePage() {
                 },
                 {
                   q: 'У меня нет времени на курсы',
-                  a: 'Онбординг рассчитан на 15-20 минут в день. Пропустил неделю — ничего не потерял, всё сохранено.',
+                  a: 'Онбординг рассчитан на 15-20 минут в день. Пропустил неделю, ничего не потерял. Всё сохранено.',
                 },
                 {
-                  q: 'Я уже пробовал курсы по AI — не работало',
+                  q: 'Я уже пробовал курсы по AI, не работало',
                   a: 'Я строю проекты в реальном времени и отвечаю на вопросы. Что-то не понял, пишешь напрямую.',
                 },
               ].map((item) => (

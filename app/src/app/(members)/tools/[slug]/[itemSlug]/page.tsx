@@ -7,7 +7,7 @@ import { Header } from '@/components/layout/Header'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { TOOL_META, TYPE_LABELS, type ToolSlug, type ContentItem } from '@/types/content'
-import { CopyButton } from '@/components/content/CopyButton'
+import { CodeCopyButton } from '@/components/content/CodeCopyButton'
 import { AdminEditBar } from '@/components/admin/AdminEditBar'
 
 interface Props {
@@ -116,13 +116,12 @@ export default async function ContentItemPage({ params }: Props) {
           {/* Content body */}
           {typedItem.content_body && (
             <div className="rounded-xl border border-border bg-card p-6">
-              <div className="flex items-center justify-end mb-4">
-                <CopyButton text={typedItem.content_body.replace(/<[^>]*>/g, '')} />
-              </div>
               <div
-                className="prose prose-sm max-w-none"
+                id="content-body"
+                className="prose prose-base max-w-none"
                 dangerouslySetInnerHTML={{ __html: typedItem.content_body }}
               />
+              <CodeCopyButton containerId="content-body" />
             </div>
           )}
 

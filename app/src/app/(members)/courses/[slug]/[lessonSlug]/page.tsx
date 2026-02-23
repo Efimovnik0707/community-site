@@ -8,6 +8,7 @@ import { LessonCompleteButton } from '@/components/content/LessonCompleteButton'
 import { AdminEditBar } from '@/components/admin/AdminEditBar'
 import Link from 'next/link'
 import type { CourseModule, Lesson } from '@/types/course'
+import { CodeCopyButton } from '@/components/content/CodeCopyButton'
 
 interface Props {
   params: Promise<{ slug: string; lessonSlug: string }>
@@ -30,18 +31,20 @@ export default async function LessonPage({ params }: Props) {
 
   if (!user) redirect('/login')
   const isMember = user.role === 'member' || user.role === 'admin'
-  if (!isMember) redirect('/join')
 
   const supabase = createServiceClient()
 
   // Get course
   const { data: course } = await supabase
     .from('comm_courses')
-    .select('id, title, slug')
+    .select('id, title, slug, is_premium')
     .eq('slug', slug)
     .eq('published', true)
     .single()
   if (!course) notFound()
+
+  // Premium courses require membership; free courses are open to all logged-in users
+  if (course.is_premium && !isMember) redirect('/join')
 
   // Get lesson via module
   const { data: modules } = await supabase
@@ -175,8 +178,9 @@ export default async function LessonPage({ params }: Props) {
 
           {/* Lesson content */}
           {lesson.content && (
-            <div className="prose prose-invert prose-sm max-w-none mb-10">
+            <div id="lesson-content" className="prose prose-invert prose-base max-w-none mb-10">
               <div dangerouslySetInnerHTML={{ __html: lesson.content }} />
+              <CodeCopyButton containerId="lesson-content" />
             </div>
           )}
 

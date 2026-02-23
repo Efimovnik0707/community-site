@@ -34,7 +34,7 @@ export function ContentCard({ item, accessible }: Props) {
           {item.title}
         </h3>
         {item.description && (
-          <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
             {item.description}
           </p>
         )}

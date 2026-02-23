@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Header } from '@/components/layout/Header'
 
 export const metadata: Metadata = {
-  title: 'Политика конфиденциальности — AI Комьюнити',
+  title: 'Политика конфиденциальности | AI Комьюнити',
 }
 
 export default function PrivacyPage() {
@@ -23,12 +23,12 @@ export default function PrivacyPage() {
           <h1 className="text-3xl font-bold mb-2">Политика конфиденциальности</h1>
           <p className="text-sm text-muted-foreground mb-10">Последнее обновление: {updated}</p>
 
-          <div className="prose prose-invert prose-sm max-w-none space-y-8">
+          <div className="prose prose-invert prose-base max-w-none space-y-8">
 
             <section>
               <h2 className="text-lg font-semibold mb-3">1. Кто мы</h2>
               <p className="text-muted-foreground leading-relaxed">
-                AI Комьюнити — образовательная платформа по искусственному интеллекту и автоматизации,
+                AI Комьюнити. Образовательная платформа по искусственному интеллекту и автоматизации,
                 доступная на сайте <strong>aipack.live</strong>. Владелец: Никита Ефимов
                 (ИП / физическое лицо, Испания). По вопросам конфиденциальности: напишите в Telegram{' '}
                 <a href="https://t.me/yefimov_comm_bot" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
@@ -85,9 +85,9 @@ export default function PrivacyPage() {
               <h2 className="text-lg font-semibold mb-3">4. Правовая основа (GDPR)</h2>
               <p className="text-muted-foreground text-sm leading-relaxed">
                 Обработка данных осуществляется на основании:{' '}
-                <strong>исполнения договора</strong> (ст. 6(1)(b) GDPR) — для предоставления доступа
-                к платформе; <strong>законного интереса</strong> (ст. 6(1)(f)) — для обеспечения
-                безопасности; <strong>согласия</strong> (ст. 6(1)(a)) — для связывания аккаунтов
+                <strong>исполнения договора</strong> (ст. 6(1)(b) GDPR): предоставление доступа
+                к платформе; <strong>законного интереса</strong> (ст. 6(1)(f)): обеспечение
+                безопасности; <strong>согласия</strong> (ст. 6(1)(a)): связывание аккаунтов
                 Telegram и email.
               </p>
             </section>
@@ -95,10 +95,10 @@ export default function PrivacyPage() {
             <section>
               <h2 className="text-lg font-semibold mb-3">5. Передача данных третьим сторонам</h2>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <p><strong className="text-foreground">Supabase</strong> — база данных и аутентификация (США, соглашение SCCs с ЕС)</p>
-                <p><strong className="text-foreground">Vercel</strong> — хостинг (США, соглашение SCCs с ЕС)</p>
-                <p><strong className="text-foreground">Stripe</strong> — приём платежей (обрабатывает платёжные данные, PCI DSS Level 1)</p>
-                <p><strong className="text-foreground">Telegram</strong> — авторизация через бота (данные по политике Telegram)</p>
+                <p><strong className="text-foreground">Supabase</strong>: база данных и аутентификация (США, соглашение SCCs с ЕС)</p>
+                <p><strong className="text-foreground">Vercel</strong>: хостинг (США, соглашение SCCs с ЕС)</p>
+                <p><strong className="text-foreground">Stripe</strong>: приём платежей (обрабатывает платёжные данные, PCI DSS Level 1)</p>
+                <p><strong className="text-foreground">Telegram</strong>: авторизация через бота (данные по политике Telegram)</p>
                 <p className="pt-1">Мы не продаём и не передаём ваши данные третьим лицам в маркетинговых целях.</p>
               </div>
             </section>
@@ -106,8 +106,8 @@ export default function PrivacyPage() {
             <section>
               <h2 className="text-lg font-semibold mb-3">6. Хранение данных</h2>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Данные хранятся, пока у вас есть аккаунт на платформе. После удаления аккаунта —
-                в течение 30 дней, после чего удаляются безвозвратно. Логи Vercel хранятся не более
+                Данные хранятся, пока у вас есть аккаунт на платформе. После удаления аккаунта
+                данные сохраняются в течение 30 дней, после чего удаляются безвозвратно. Логи Vercel хранятся не более
                 30 дней согласно их политике.
               </p>
             </section>
@@ -115,12 +115,12 @@ export default function PrivacyPage() {
             <section>
               <h2 className="text-lg font-semibold mb-3">7. Ваши права (GDPR)</h2>
               <ul className="list-disc list-inside text-muted-foreground space-y-1.5 text-sm">
-                <li><strong className="text-foreground">Доступ</strong> — получить копию своих данных</li>
-                <li><strong className="text-foreground">Исправление</strong> — обновить неточные данные</li>
-                <li><strong className="text-foreground">Удаление</strong> — запросить удаление аккаунта и данных</li>
-                <li><strong className="text-foreground">Ограничение</strong> — ограничить обработку данных</li>
-                <li><strong className="text-foreground">Переносимость</strong> — получить данные в машиночитаемом формате</li>
-                <li><strong className="text-foreground">Возражение</strong> — отозвать согласие</li>
+                <li><strong className="text-foreground">Доступ</strong>: получить копию своих данных</li>
+                <li><strong className="text-foreground">Исправление</strong>: обновить неточные данные</li>
+                <li><strong className="text-foreground">Удаление</strong>: запросить удаление аккаунта и данных</li>
+                <li><strong className="text-foreground">Ограничение</strong>: ограничить обработку данных</li>
+                <li><strong className="text-foreground">Переносимость</strong>: получить данные в машиночитаемом формате</li>
+                <li><strong className="text-foreground">Возражение</strong>: отозвать согласие</li>
               </ul>
               <p className="text-muted-foreground text-sm mt-3">
                 Для реализации прав: напишите в Telegram{' '}

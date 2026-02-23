@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Header } from '@/components/layout/Header'
 
 export const metadata: Metadata = {
-  title: 'Условия использования — AI Комьюнити',
+  title: 'Условия использования | AI Комьюнити',
 }
 
 export default function TermsPage() {
@@ -23,7 +23,7 @@ export default function TermsPage() {
           <h1 className="text-3xl font-bold mb-2">Условия использования</h1>
           <p className="text-sm text-muted-foreground mb-10">Последнее обновление: {updated}</p>
 
-          <div className="prose prose-invert prose-sm max-w-none space-y-8">
+          <div className="prose prose-invert prose-base max-w-none space-y-8">
 
             <section>
               <h2 className="text-lg font-semibold mb-3">1. Общие положения</h2>
