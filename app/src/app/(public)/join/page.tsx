@@ -59,20 +59,28 @@ export default async function JoinPage() {
           <div className="grid gap-4 sm:grid-cols-2 mb-8">
             <div className="rounded-2xl border border-primary/60 bg-card p-6 relative">
               <Badge className="mb-3 text-xs absolute -top-3 left-4">Лучший старт</Badge>
-              <p className="text-sm text-muted-foreground mb-1 mt-2">3 месяца</p>
-              <div className="flex items-baseline gap-1 mb-1">
+              <div className="flex items-center gap-2 mt-2 mb-1">
+                <p className="text-sm text-muted-foreground">3 месяца</p>
+                <span className="text-xs font-semibold bg-emerald-500/15 text-emerald-400 px-1.5 py-0.5 rounded-md">-50%</span>
+              </div>
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-sm text-muted-foreground/50 line-through">$260</span>
                 <span className="text-3xl font-bold">$130</span>
                 <span className="text-sm text-muted-foreground">/3 мес</span>
               </div>
-              <p className="text-xs text-accent-brand">Экономия $20 по сравнению с помесячным</p>
+              <p className="text-xs text-accent-brand">Экономия $130 · скидка при оплате сразу 3 месяца</p>
             </div>
             <div className="rounded-2xl border border-border bg-card p-6">
-              <p className="text-sm text-muted-foreground mb-1">Месяц</p>
-              <div className="flex items-baseline gap-1 mb-1">
+              <div className="flex items-center gap-2 mb-1">
+                <p className="text-sm text-muted-foreground">Месяц</p>
+                <span className="text-xs font-semibold bg-emerald-500/15 text-emerald-400 px-1.5 py-0.5 rounded-md">-50%</span>
+              </div>
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-sm text-muted-foreground/50 line-through">$100</span>
                 <span className="text-3xl font-bold">$50</span>
                 <span className="text-sm text-muted-foreground">/мес</span>
               </div>
-              <p className="text-xs text-muted-foreground">Отмена в любой момент</p>
+              <p className="text-xs text-muted-foreground">Цена запуска · отмена в любой момент</p>
             </div>
           </div>
 

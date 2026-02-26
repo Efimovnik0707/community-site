@@ -57,7 +57,10 @@ export default async function HomePage() {
               <Button asChild size="lg" className="text-base font-semibold px-10 h-12">
                 <Link href="/join">Вступить в сообщество</Link>
               </Button>
-              <span className="text-sm text-muted-foreground">$50/мес · отмена в любой момент</span>
+              <span className="text-sm text-muted-foreground">
+                <span className="line-through text-muted-foreground/40 mr-1">$100</span>
+                $50/мес · отмена в любой момент
+              </span>
             </div>
           </div>
         </section>
@@ -142,7 +145,9 @@ export default async function HomePage() {
             <div className="mb-10">
               <p className="text-sm font-medium text-accent-brand mb-2">Членство</p>
               <h2 className="text-2xl font-bold md:text-3xl">
-                Что получишь за $50 в месяц
+                Что получишь за{' '}
+                <span className="line-through text-muted-foreground/40 text-xl font-normal mr-1">$100</span>
+                $50 в месяц
               </h2>
             </div>
 
@@ -220,7 +225,7 @@ export default async function HomePage() {
           <section className="py-20 border-t border-border">
             <div className="mx-auto max-w-3xl px-4">
               <div className="mb-8">
-                <p className="text-sm font-medium text-muted-foreground mb-2">Не готов к $50/мес?</p>
+                <p className="text-sm font-medium text-muted-foreground mb-2">Не готов к <span className="line-through opacity-50">$100</span> $50/мес?</p>
                 <h2 className="text-2xl font-bold">Начни с малого</h2>
                 <p className="mt-2 text-sm text-muted-foreground">
                   Разовая покупка. Попробуй, убедись что работает, потом решай.
@@ -266,20 +271,28 @@ export default async function HomePage() {
             <div className="grid gap-4 sm:grid-cols-2 max-w-xl mx-auto mb-10">
               <div className="rounded-2xl border border-primary/60 bg-card p-6 relative">
                 <Badge className="mb-3 text-xs absolute -top-3 left-4">Лучший старт</Badge>
-                <p className="text-sm text-muted-foreground mb-1 mt-2">3 месяца</p>
-                <div className="flex items-baseline gap-1 mb-1">
+                <div className="flex items-center gap-2 mt-2 mb-1">
+                  <p className="text-sm text-muted-foreground">3 месяца</p>
+                  <span className="text-xs font-semibold bg-emerald-500/15 text-emerald-400 px-1.5 py-0.5 rounded-md">-50%</span>
+                </div>
+                <div className="flex items-baseline gap-2 mb-1">
+                  <span className="text-sm text-muted-foreground/50 line-through">$260</span>
                   <span className="text-3xl font-bold">$130</span>
                   <span className="text-sm text-muted-foreground">/3 мес</span>
                 </div>
-                <p className="text-xs text-accent-brand">Экономия $20 по сравнению с помесячным</p>
+                <p className="text-xs text-accent-brand">Экономия $130 · цена запуска</p>
               </div>
               <div className="rounded-2xl border border-border bg-card p-6">
-                <p className="text-sm text-muted-foreground mb-1">Месяц</p>
-                <div className="flex items-baseline gap-1 mb-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-sm text-muted-foreground">Месяц</p>
+                  <span className="text-xs font-semibold bg-emerald-500/15 text-emerald-400 px-1.5 py-0.5 rounded-md">-50%</span>
+                </div>
+                <div className="flex items-baseline gap-2 mb-1">
+                  <span className="text-sm text-muted-foreground/50 line-through">$100</span>
                   <span className="text-3xl font-bold">$50</span>
                   <span className="text-sm text-muted-foreground">/мес</span>
                 </div>
-                <p className="text-xs text-muted-foreground">Отмена в любой момент</p>
+                <p className="text-xs text-muted-foreground">Цена запуска · отмена в любой момент</p>
               </div>
             </div>
 
@@ -329,7 +342,7 @@ export default async function HomePage() {
               Покажу как. На реальных задачах. Первый месяц попробуй и реши сам.
             </p>
             <Button asChild size="lg" className="mt-8 text-base font-semibold px-10 h-12">
-              <Link href="/join">Вступить за $50/мес</Link>
+              <Link href="/join">Вступить за $50/мес <span className="ml-2 line-through text-xs opacity-60">$100</span></Link>
             </Button>
             <p className="mt-3 text-xs text-muted-foreground">Отмена в любой момент</p>
           </div>
