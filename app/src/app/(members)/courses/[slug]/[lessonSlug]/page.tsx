@@ -43,8 +43,10 @@ export default async function LessonPage({ params }: Props) {
     .single()
   if (!course) notFound()
 
-  // Premium courses require membership; free courses are open to all logged-in users
-  if (course.is_premium && !isMember) redirect('/join')
+  // Get lesson to check is_free before gating
+  // (actual lesson fetch below; this is just for early access check)
+  // Access rule: premium course + not member → only allowed if lesson.is_free
+  // We check after fetching the lesson below
 
   // Get lesson via module
   const { data: modules } = await supabase
@@ -68,18 +70,25 @@ export default async function LessonPage({ params }: Props) {
   }
   if (!lesson) notFound()
 
+  // Gate access: premium course + not member + lesson not free → redirect to course page (not /join, so they see the structure)
+  if (course.is_premium && !isMember && !lesson.is_free) redirect(`/courses/${slug}`)
+
   // Get all lessons for prev/next navigation
   const { data: allLessons } = await supabase
     .from('comm_lessons')
-    .select('id, slug, title, module_id, sort_order')
+    .select('id, slug, title, module_id, sort_order, is_free')
     .in('module_id', moduleIds)
     .eq('published', true)
     .order('sort_order', { ascending: true })
 
-  const lessons: Lesson[] = allLessons ?? []
-  const currentIdx = lessons.findIndex(l => l.id === lesson!.id)
-  const prevLesson = currentIdx > 0 ? lessons[currentIdx - 1] : null
-  const nextLesson = currentIdx < lessons.length - 1 ? lessons[currentIdx + 1] : null
+  // For non-members on premium courses: only navigate between accessible lessons
+  const allLessonsList: Lesson[] = allLessons ?? []
+  const navigableLessons = (course.is_premium && !isMember)
+    ? allLessonsList.filter(l => l.is_free)
+    : allLessonsList
+  const currentIdx = navigableLessons.findIndex(l => l.id === lesson!.id)
+  const prevLesson = currentIdx > 0 ? navigableLessons[currentIdx - 1] : null
+  const nextLesson = currentIdx < navigableLessons.length - 1 ? navigableLessons[currentIdx + 1] : null
 
   // Check completion (only if Telegram identity available)
   const { data: progress } = user.telegramId ? await supabase

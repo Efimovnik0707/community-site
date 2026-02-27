@@ -35,6 +35,7 @@ export interface Lesson {
   duration: number | null
   sort_order: number
   published: boolean
+  is_free: boolean
   attachments: AttachedFile[]
 }
 

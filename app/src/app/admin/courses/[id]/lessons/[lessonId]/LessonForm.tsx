@@ -17,6 +17,7 @@ interface Lesson {
   duration: number | null
   sort_order: number
   published: boolean
+  is_free: boolean
   attachments: AttachedFile[]
 }
 
@@ -52,6 +53,7 @@ export function LessonForm({ courseId, moduleId, lesson }: LessonFormProps) {
   const [duration, setDuration] = useState(lesson?.duration ? Math.floor(lesson.duration / 60).toString() : '')
   const [attachments, setAttachments] = useState<AttachedFile[]>(lesson?.attachments ?? [])
   const [published, setPublished] = useState(lesson?.published ?? false)
+  const [isFree, setIsFree] = useState(lesson?.is_free ?? false)
   const [sortOrder, setSortOrder] = useState(lesson?.sort_order ?? 0)
 
   function autoSlug(t: string) {
@@ -74,6 +76,7 @@ export function LessonForm({ courseId, moduleId, lesson }: LessonFormProps) {
       duration: duration ? Number(duration) * 60 : null,
       attachments,
       published,
+      is_free: isFree,
       sort_order: sortOrder,
     }
 
@@ -186,7 +189,16 @@ export function LessonForm({ courseId, moduleId, lesson }: LessonFormProps) {
             <input type="checkbox" checked={published} onChange={e => setPublished(e.target.checked)} className="w-4 h-4 accent-primary" />
             <span className="text-sm">Опубликовать</span>
           </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" checked={isFree} onChange={e => setIsFree(e.target.checked)} className="w-4 h-4 accent-primary" />
+            <span className="text-sm">Бесплатный урок</span>
+          </label>
         </div>
+        {isFree && (
+          <p className="text-xs text-muted-foreground -mt-2">
+            Этот урок будет виден всем (даже в платном курсе)
+          </p>
+        )}
       </div>
     </div>
   )

@@ -45,10 +45,7 @@ export default async function CoursePage({ params }: Props) {
 
   if (!course) notFound()
 
-  // Premium courses require membership; free courses are open to all logged-in users
-  if ((course as Course).is_premium && !isMember) redirect('/join')
-
-  // Fetch modules + lessons
+  // Fetch modules + lessons (all logged-in users can see the structure)
   const { data: modules } = await supabase
     .from('comm_course_modules')
     .select('*')
@@ -79,10 +76,14 @@ export default async function CoursePage({ params }: Props) {
   }
 
   const completedIds = new Set(progress.filter(p => p.completed).map(p => p.lesson_id))
-  const totalLessons = lessons.length
-  const completedCount = lessons.filter(l => completedIds.has(l.id)).length
+
+  // For progress bar: count only accessible lessons
+  const accessibleLessons = lessons.filter(l => isMember || !(course as Course).is_premium || l.is_free)
+  const totalLessons = accessibleLessons.length
+  const completedCount = accessibleLessons.filter(l => completedIds.has(l.id)).length
 
   const isAdmin = user.role === 'admin'
+  const isPremiumCourse = (course as Course).is_premium
 
   return (
     <>
@@ -101,8 +102,8 @@ export default async function CoursePage({ params }: Props) {
               <p className="text-muted-foreground">{(course as Course).description}</p>
             )}
 
-            {/* Progress bar */}
-            {totalLessons > 0 && (
+            {/* Progress bar (only for members or free courses) */}
+            {(isMember || !isPremiumCourse) && totalLessons > 0 && (
               <div className="mt-6">
                 <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
                   <span>Прогресс</span>
@@ -134,14 +135,18 @@ export default async function CoursePage({ params }: Props) {
                       {module.title}
                     </h2>
                     <div className="space-y-2">
-                      {moduleLessons.map(lesson => (
-                        <LessonRow
-                          key={lesson.id}
-                          lesson={lesson}
-                          courseSlug={slug}
-                          completed={completedIds.has(lesson.id)}
-                        />
-                      ))}
+                      {moduleLessons.map(lesson => {
+                        const isLocked = isPremiumCourse && !isMember && !lesson.is_free
+                        return (
+                          <LessonRow
+                            key={lesson.id}
+                            lesson={lesson}
+                            courseSlug={slug}
+                            completed={completedIds.has(lesson.id)}
+                            isLocked={isLocked}
+                          />
+                        )
+                      })}
                       {moduleLessons.length === 0 && (
                         <p className="text-xs text-muted-foreground py-2 px-4">
                           Уроки готовятся...
@@ -151,6 +156,17 @@ export default async function CoursePage({ params }: Props) {
                   </section>
                 )
               })}
+            </div>
+          )}
+
+          {/* CTA for non-members on premium courses */}
+          {isPremiumCourse && !isMember && (
+            <div className="mt-10 rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center">
+              <p className="text-sm text-muted-foreground mb-1">Полный доступ к курсу</p>
+              <p className="font-semibold mb-4">Откройте все уроки, вступив в комьюнити</p>
+              <Button asChild>
+                <Link href="/join">Вступить в клуб</Link>
+              </Button>
             </div>
           )}
         </div>
@@ -169,14 +185,36 @@ function LessonRow({
   lesson,
   courseSlug,
   completed,
+  isLocked,
 }: {
   lesson: Lesson
   courseSlug: string
   completed: boolean
+  isLocked: boolean
 }) {
   const durationStr = lesson.duration
     ? `${Math.floor(lesson.duration / 60)} мин`
     : null
+
+  if (isLocked) {
+    return (
+      <div className="flex items-center gap-3 rounded-lg border border-border/40 bg-card/40 px-4 py-3 opacity-60">
+        <svg className="shrink-0 text-muted-foreground/50" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <rect x="3" y="7" width="10" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.3"/>
+          <path d="M5 7V5a3 3 0 016 0v2" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/>
+        </svg>
+        <span className="text-sm text-muted-foreground flex-1 min-w-0">{lesson.title}</span>
+        <div className="flex items-center gap-3 shrink-0">
+          {durationStr && (
+            <span className="text-xs text-muted-foreground/60">{durationStr}</span>
+          )}
+          <Badge variant="outline" className="text-xs border-muted-foreground/20 text-muted-foreground/60">
+            Участникам
+          </Badge>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 hover:border-primary/30 transition-colors group">
@@ -192,6 +230,9 @@ function LessonRow({
           {lesson.title}
         </span>
         <div className="flex items-center gap-3 shrink-0">
+          {lesson.is_free && (
+            <Badge variant="secondary" className="text-xs">Бесплатно</Badge>
+          )}
           {lesson.youtube_id && (
             <Badge variant="secondary" className="text-xs">Видео</Badge>
           )}

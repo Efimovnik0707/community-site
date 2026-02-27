@@ -68,6 +68,17 @@ export function CourseForm({ course }: CourseFormProps) {
             className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring resize-none" />
         </div>
         <div>
+          <label className="block text-sm font-medium mb-1.5">Порядок (sort order)</label>
+          <input
+            type="number"
+            value={sortOrder}
+            onChange={e => setSortOrder(Number(e.target.value))}
+            className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            placeholder="0"
+          />
+          <p className="mt-1 text-xs text-muted-foreground">Меньшее число = выше в списке</p>
+        </div>
+        <div>
           <label className="block text-sm font-medium mb-1.5">Статус</label>
           <select
             value={status}
