@@ -98,8 +98,8 @@ export default async function HomePage() {
         {/* ── ОСНОВАТЕЛЬ ── */}
         <section className="py-20 border-t border-border">
           <div className="mx-auto max-w-3xl px-4">
-            <div className="flex flex-col md:flex-row gap-10 items-start">
-              <div className="shrink-0">
+            <div className="flex flex-col md:flex-row gap-10 items-center md:items-start">
+              <div className="shrink-0 self-center md:self-start">
                 <Image
                   src="/nikita.png"
                   alt="Никита Ефимов"
@@ -132,7 +132,10 @@ export default async function HomePage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 mt-4 text-sm text-accent-brand hover:opacity-80 transition-opacity"
                 >
-                  Telegram-канал →
+                  Telegram-канал
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden>
+                    <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </a>
               </div>
             </div>
@@ -252,7 +255,12 @@ export default async function HomePage() {
                     {p.tagline && (
                       <p className="text-xs text-muted-foreground leading-relaxed">{p.tagline}</p>
                     )}
-                    <p className="mt-4 text-xs text-primary group-hover:underline">Купить →</p>
+                    <p className="mt-4 inline-flex items-center gap-1 text-xs text-primary group-hover:opacity-80 transition-opacity">
+                      Купить
+                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden>
+                        <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </p>
                   </Link>
                 ))}
               </div>
